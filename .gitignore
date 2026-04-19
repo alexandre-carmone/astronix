@@ -2,3 +2,5 @@
 result-*
 .direnv/
 *.qcow2
+hardware-configuration.nix
+

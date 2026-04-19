@@ -10,11 +10,11 @@
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs: {
-    nixosConfigurations.monpc = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.astronix = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; };
       modules = [
-        ./hosts/monpc/configuration.nix
+        ./hosts/astronix/configuration.nix
         home-manager.nixosModules.home-manager
       ];
     };
