@@ -1,0 +1,4 @@
+.gitignoreresult
+result-*
+.direnv/
+*.qcow2
