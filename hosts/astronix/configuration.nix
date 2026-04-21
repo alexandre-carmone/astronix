@@ -14,7 +14,16 @@
   # When a monitor is plugged in, it displays the same :0 session.
   # Replace HDMI-A-1 with the actual connector on this host. Discover via:
   #   for c in /sys/class/drm/card*-*; do echo "$(basename $c): $(cat $c/status)"; done
-  boot.kernelParams = [ "video=HDMI-A-1:1920x1080@60e" ];
+  boot.kernelParams = [
+    "video=HDMI-A-1:1920x1080@60e"
+    "video=HDMI-A-2:1920x1080@60e"
+    "video=HDMI-1:1920x1080@60e"
+    "video=HDMI-2:1920x1080@60e"
+    "video=DP-1:1920x1080@60e"
+    "video=DP-2:1920x1080@60e"
+    "video=VGA-1:1920x1080@60e"
+    "video=eDP-1:1920x1080@60e"
+  ];
 
   services.printing.enable = true;
   programs.firefox.enable = true;
