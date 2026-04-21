@@ -70,14 +70,14 @@ systemd.services.headless-resolution = {
     ExecStart = pkgs.writeShellScript "force-resolution" ''
       # Attend que Xorg soit prêt
       for i in $(seq 1 30); do
-        ${pkgs.xorg.xrandr}/bin/xrandr >/dev/null 2>&1 && break
+        ${pkgs.xrandr}/bin/xrandr >/dev/null 2>&1 && break
         sleep 1
       done
       XAUTH=$(ls /run/sddm/xauth_* 2>/dev/null | head -1)
       export XAUTHORITY="$XAUTH"
-      ${pkgs.xorg.xrandr}/bin/xrandr --newmode "1920x1080_60" 173.00 1920 2048 2248 2576 1080 1083 1088 1120 -hsync +vsync || true
-      ${pkgs.xorg.xrandr}/bin/xrandr --addmode DUMMY0 "1920x1080_60" || true
-      ${pkgs.xorg.xrandr}/bin/xrandr --output DUMMY0 --mode "1920x1080_60" || true
+      ${pkgs.xrandr}/bin/xrandr --newmode "1920x1080_60" 173.00 1920 2048 2248 2576 1080 1083 1088 1120 -hsync +vsync || true
+      ${pkgs.xrandr}/bin/xrandr --addmode DUMMY0 "1920x1080_60" || true
+      ${pkgs.xrandr}/bin/xrandr --output DUMMY0 --mode "1920x1080_60" || true
     '';
   };
 };
