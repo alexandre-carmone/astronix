@@ -9,12 +9,13 @@
 
   networking.hostName = "nixos";
 
-  # Force the HDMI connector to be treated as always-connected so that
-  # Xorg starts a real :0 session even without a monitor plugged in.
-  # When a monitor is plugged in, it displays the same :0 session.
-  # Replace HDMI-A-1 with the actual connector on this host. Discover via:
-  #   for c in /sys/class/drm/card*-*; do echo "$(basename $c): $(cat $c/status)"; done
-  boot.kernelParams = [ "video=HDMI-A-1:1920x1080@60e" ];
+  # Generate a fake EDID and pin it to HDMI-A-1 so the connector is
+  # always reported connected at 1920x1080 from boot, whether or not a
+  # real monitor is plugged in. Without this Xorg falls back to 1024x768.
+  hardware.display.edid.modelines."FHD_60" =
+    "173.00 1920 2048 2248 2576 1080 1083 1088 1120 -hsync +vsync";
+  hardware.display.outputs."HDMI-A-1".edid = "FHD_60.bin";
+  hardware.display.outputs."HDMI-A-1".mode = "e";
 
   services.printing.enable = true;
   programs.firefox.enable = true;

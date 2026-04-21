@@ -39,7 +39,7 @@
       SubSection "Display"
         Depth 24
         Modes "1920x1080" "2560x1440" "1680x1050"
-        Virtual 2560 1440
+        Virtual 1920 1080
       EndSubSection
     '';
   };
