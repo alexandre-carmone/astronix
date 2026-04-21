@@ -2,5 +2,4 @@
 result-*
 .direnv/
 *.qcow2
-secrets/
 
