@@ -9,6 +9,13 @@
 
   networking.hostName = "nixos";
 
+  # Force the HDMI connector to be treated as always-connected so that
+  # Xorg starts a real :0 session even without a monitor plugged in.
+  # When a monitor is plugged in, it displays the same :0 session.
+  # Replace HDMI-A-1 with the actual connector on this host. Discover via:
+  #   for c in /sys/class/drm/card*-*; do echo "$(basename $c): $(cat $c/status)"; done
+  boot.kernelParams = [ "video=HDMI-A-1:1920x1080@60e" ];
+
   services.printing.enable = true;
   programs.firefox.enable = true;
 
