@@ -38,7 +38,9 @@
     isNormalUser = true;
     description = "alexandre";
     extraGroups = [ "networkmanager" "wheel" ];
-  };
+  } // (if builtins.pathExists ../secrets/password.nix
+        then { initialHashedPassword = import ../secrets/password.nix; }
+        else {});
 
   nixpkgs.config.allowUnfree = true;
 
