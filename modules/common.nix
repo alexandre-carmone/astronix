@@ -4,6 +4,7 @@
   imports = [
     ./zsh.nix
   ];
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   home-manager.useUserPackages = true;
   home-manager.users.alexandre = { pkgs, lib, ... }: {
