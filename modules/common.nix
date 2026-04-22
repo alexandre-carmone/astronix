@@ -3,6 +3,7 @@
 {
   imports = [
     ./zsh.nix
+    ./nvim
   ];
 
   boot.loader.systemd-boot.enable = true;
