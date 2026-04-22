@@ -46,7 +46,7 @@ in
     viAlias = true;
     vimAlias = true;
 
-    extraConfig = luaConfig;
+    extraLuaConfig = luaConfig;
 
     plugins = collect "plugins" [];
     extraPackages = collect "extraPackages" [];

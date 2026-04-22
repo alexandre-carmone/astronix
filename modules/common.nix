@@ -3,8 +3,14 @@
 {
   imports = [
     ./zsh.nix
-    ./nvim
   ];
+
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.users.alexandre = { pkgs, lib, ... }: {
+    imports = [ ./nvim ];
+    home.stateVersion = "25.11";
+  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
