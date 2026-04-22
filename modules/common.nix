@@ -40,6 +40,17 @@
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
+services.keyd = {
+  enable = true;
+  keyboards.default = {
+    ids = [ "*" ];
+    settings.main = {
+      esc = "capslock";
+      capslock = "esc";
+    };
+  };
+};
+
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
@@ -47,6 +58,8 @@
     wget
     git
     uv
+    zellij
+    brave
   ];
 
   services.openssh.enable = true;
