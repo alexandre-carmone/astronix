@@ -5,7 +5,6 @@
     ./zsh.nix
   ];
 
-  home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.users.alexandre = { pkgs, lib, ... }: {
     imports = [ ./nvim ];
