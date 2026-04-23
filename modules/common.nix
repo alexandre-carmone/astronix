@@ -48,16 +48,16 @@ programs.neovim = {
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
-services.keyd = {
-  enable = true;
-  keyboards.default = {
-    ids = [ "*" ];
-    settings.main = {
-      esc = "capslock";
-      capslock = "esc";
+  services.keyd = {
+    enable = true;
+    keyboards.default = {
+      ids = [ "*" ];
+      settings.main = {
+        esc = "capslock";
+        capslock = "esc";
+      };
     };
   };
-};
 
   nixpkgs.config.allowUnfree = true;
 

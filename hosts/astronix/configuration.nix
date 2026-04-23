@@ -7,7 +7,7 @@
     ../../modules/common.nix
   ];
 
-  networking.hostName = "nixos";
+  networking.hostName = "astronomix";
 
   # Generate a fake EDID and pin it to HDMI-A-1 so the connector is
   # always reported connected at 1920x1080 from boot, whether or not a
@@ -16,19 +16,35 @@
     "173.00 1920 2048 2248 2576 1080 1083 1088 1120 -hsync +vsync";
   hardware.display.outputs."HDMI-A-1".edid = "FHD_60.bin";
   hardware.display.outputs."HDMI-A-1".mode = "e";
-
+  services.openssh = {
+    enable = true;
+    ports = [22];
+  };
+  services.xserver.xkb.options = "caps:swapescape";
   services.printing.enable = true;
   programs.firefox.enable = true;
 
   users.users.alexandre.packages = with pkgs; [
     kdePackages.kate
   ];
+  users.users.alexandre = {
+  isNormalUser = true;
+  extraGroups = [ "wheel" "dialout" ];  
 
+  };
+  services.udev.packages = [
+    pkgs.indi-full
+    pkgs.indi-3rdparty.indi-toupbase
+  ];
   environment.systemPackages = with pkgs; [
+    cargo
+    rustup
     ghostty
     rustdesk-flutter
     kstars
     phd2
+    siril
+    gimp
     indi-full
     indi-3rdparty.indi-toupbase
   ];
