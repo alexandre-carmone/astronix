@@ -5,22 +5,22 @@ let
   mkModule = path: import path { inherit pkgs lib; };
 
   modules = [
-    (mkModule ./options.nix)
-    (mkModule ./keymaps.nix)
-    (mkModule ./autocmds.nix)
+    #(mkModule ./options.nix)
+    #(mkModule ./keymaps.nix)
+    #(mkModule ./autocmds.nix)
 
-    (mkModule ./plugins/colorscheme.nix)
-    (mkModule ./plugins/treesitter.nix)
-    (mkModule ./plugins/lsp.nix)
-    (mkModule ./plugins/cmp.nix)
-    (mkModule ./plugins/telescope.nix)
-    (mkModule ./plugins/bufferline.nix)
-    (mkModule ./plugins/lualine.nix)
-    (mkModule ./plugins/explorer.nix)
-    (mkModule ./plugins/which-key.nix)
-    (mkModule ./plugins/lazygit.nix)
-    (mkModule ./plugins/venv-selector.nix)
-    (mkModule ./plugins/claudecode.nix)
+    #(mkModule ./plugins/colorscheme.nix)
+    #(mkModule ./plugins/treesitter.nix)
+    #(mkModule ./plugins/lsp.nix)
+    #(mkModule ./plugins/cmp.nix)
+    #(mkModule ./plugins/telescope.nix)
+    #(mkModule ./plugins/bufferline.nix)
+    #(mkModule ./plugins/lualine.nix)
+    #(mkModule ./plugins/explorer.nix)
+    #(mkModule ./plugins/which-key.nix)
+    #(mkModule ./plugins/lazygit.nix)
+    #(mkModule ./plugins/venv-selector.nix)
+    #(mkModule ./plugins/claudecode.nix)
   ];
 
   collect = field: default:
@@ -46,7 +46,7 @@ in
     viAlias = true;
     vimAlias = true;
 
-    extraLuaConfig = luaConfig;
+    extraConfig = luaConfig;
 
     plugins = collect "plugins" [];
     extraPackages = collect "extraPackages" [];

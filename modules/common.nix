@@ -7,10 +7,11 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   home-manager.useUserPackages = true;
-  home-manager.users.alexandre = { pkgs, lib, ... }: {
-    imports = [ ./nvim ];
-    home.stateVersion = "25.11";
-  };
+
+programs.neovim = {
+  enable = true;
+  defaultEditor = true;
+};
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -61,7 +62,6 @@ services.keyd = {
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
-    vim
     wget
     git
     uv
@@ -69,6 +69,7 @@ services.keyd = {
     brave
   ];
 
+  programs.lazygit.enable = true;
   services.openssh.enable = true;
 
   system.stateVersion = "25.11";
