@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports = [
@@ -37,6 +37,7 @@
     pkgs.indi-3rdparty.indi-toupbase
   ];
   environment.systemPackages = with pkgs; [
+    inputs.ekos-web-rust.packages.x86_64-linux.rekosServer
     cargo
     rustup
     ghostty

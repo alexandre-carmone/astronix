@@ -7,6 +7,7 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    ekos-web-rust.url = "github:alexandre-carmone/ekos-web-rust";
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs: {
