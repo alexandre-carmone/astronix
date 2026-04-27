@@ -8,6 +8,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ekos-web-rust.url = "github:alexandre-carmone/ekos-web-rust";
+    nvim-config = {
+      url = "github:alexandre-carmone/nvim";
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs: {

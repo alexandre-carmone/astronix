@@ -1,17 +1,13 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports = [
     ./zsh.nix
+    "${inputs.nvim-config}/nix"
   ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   home-manager.useUserPackages = true;
-
-programs.neovim = {
-  enable = true;
-  defaultEditor = true;
-};
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
