@@ -41,6 +41,8 @@
     enable = true;
     openFirewall = true;
 
+    capturesDir = "/home/alexandre/Pictures/astro";
+
     httpAddr  = "0.0.0.0:8080";
     httpsAddr = "0.0.0.0:8443";
 
