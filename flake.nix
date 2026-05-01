@@ -8,7 +8,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     rekos-web = {
-      url = "git+file:///home/alexandre/PycharmProjects/rekos-web";
+      url = "github:alexandre-carmone/ekos-web-rust";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nvim-config = {
