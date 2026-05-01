@@ -4,13 +4,17 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/e3ed29f0e112ed8e47525ba8b7f19ae0762b0824";
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ekos-web-rust.url = "github:alexandre-carmone/ekos-web-rust";
     nvim-config = {
       url = "github:alexandre-carmone/nvim";
       flake = false;
+    };
+    lazyvim = {
+      url = "github:pfassina/lazyvim-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
