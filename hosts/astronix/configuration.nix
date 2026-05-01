@@ -36,8 +36,36 @@
     pkgs.indi-full
     pkgs.indi-3rdparty.indi-toupbase
   ];
+
+  services.rekos-web = {
+    enable = true;
+    openFirewall = true;
+
+    tls.subjectAltNames = [
+      "DNS:localhost"
+      "IP:127.0.0.1"
+      "IP:0.0.0.0"   # the host's LAN IP — required for iOS Safari to accept the cert
+      "DNS:astro.lan"
+    ];
+
+    # Or: bring your own cert (autoGenerate becomes
+  irrelevant)
+    # tls.autoGenerate = false;
+    # tls.cert = "/run/secrets/rekos-cert.pem";
+    # tls.key  = "/run/secrets/rekos-key.pem";
+      "DNS:localhost"
+      "IP:127.0.0.1"
+      "IP:0.0.0.0"   # the host's LAN IP — required for iOS Safari to accept the cert
+      "DNS:astro.lan"
+    ];
+
+    # Or: bring your own cert (autoGenerate becomes irrelevant)
+    tls.autoGenerate = true;
+    #tls.cert = "/run/secrets/rekos-cert.pem";
+    #tls.key  = "/run/secrets/rekos-key.pem";
+  };
+    
   environment.systemPackages = with pkgs; [
-    inputs.ekos-web-rust.packages.x86_64-linux.rekosServer
     cargo
     rustup
     ghostty
