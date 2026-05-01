@@ -48,8 +48,7 @@
       "DNS:astro.lan"
     ];
 
-    # Or: bring your own cert (autoGenerate becomes
-  irrelevant)
+    # Or: bring your own cert (autoGenerate becomes irrelevant)
     # tls.autoGenerate = false;
     # tls.cert = "/run/secrets/rekos-cert.pem";
     # tls.key  = "/run/secrets/rekos-key.pem";
