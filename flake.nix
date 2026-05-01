@@ -7,7 +7,10 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    ekos-web-rust.url = "github:alexandre-carmone/ekos-web-rust";
+    rekos-web = {
+      url = "git+file:///home/alexandre/PycharmProjects/rekos-web";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nvim-config = {
       url = "github:alexandre-carmone/nvim";
       flake = false;
@@ -25,6 +28,7 @@
       modules = [
         ./hosts/astronix/configuration.nix
         home-manager.nixosModules.home-manager
+        inputs.rekos-web.nixosModules.default
       ];
     };
 

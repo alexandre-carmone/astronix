@@ -41,6 +41,9 @@
     enable = true;
     openFirewall = true;
 
+    httpAddr  = "0.0.0.0:8080";
+    httpsAddr = "0.0.0.0:8443";
+
     tls.subjectAltNames = [
       "DNS:localhost"
       "IP:127.0.0.1"
