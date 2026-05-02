@@ -5,9 +5,12 @@
     ./hardware-configuration.nix
     ./headless.nix
     ../../modules/common.nix
+    ../../modules/wifi-hotspot.nix
   ];
 
   networking.hostName = "astronomix";
+
+  services.astronix.wifi.enable = true;
 
   # Generate a fake EDID and pin it to HDMI-A-1 so the connector is
   # always reported connected at 1920x1080 from boot, whether or not a
