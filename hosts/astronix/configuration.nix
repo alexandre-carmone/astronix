@@ -93,13 +93,14 @@
   };
 
 
-  systemd.services.rustdesk = {
-    description = "RustDesk remote desktop service";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
+  systemd.user.services.rustdesk = {
+    description = "RustDesk";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${pkgs.rustdesk-flutter}/bin/rustdesk --service";
+      ExecStart = "${pkgs.rustdesk-flutter}/bin/rustdesk";
       Restart = "on-failure";
       RestartSec = 5;
     };
