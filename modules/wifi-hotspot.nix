@@ -90,6 +90,13 @@ in
     networking.networkmanager.enable = true;
     networking.networkmanager.wifi.powersave = false;
 
+    # Allow hotspot clients to obtain a DHCP lease (UDP 67) and resolve
+    # DNS (53) via the dnsmasq instance NetworkManager runs for the
+    # `ipv4.method = "shared"` profile. Without these the AP is visible
+    # but clients associate and never get an IP.
+    networking.firewall.allowedUDPPorts = [ 53 67 ];
+    networking.firewall.allowedTCPPorts = [ 53 ];
+
     networking.networkmanager.ensureProfiles = {
       environmentFiles = [ cfg.credentialsFile ];
 
