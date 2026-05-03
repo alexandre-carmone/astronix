@@ -11,12 +11,12 @@
   home-manager.useUserPackages = true;
   home-manager.useGlobalPkgs = true;
   home-manager.extraSpecialArgs = { inherit inputs; };
-  home-manager.users.alexandre = { ... }: {
-    imports = [
-      inputs.lazyvim.homeManagerModules.default
-      "${inputs.nvim-config}/nix/home.nix"
-    ];
-  };
+  # home-manager.users.alexandre = { ... }: {
+  #   imports = [
+  #     inputs.lazyvim.homeManagerModules.default
+  #     "${inputs.nvim-config}/nix/home.nix"
+  #   ];
+  # };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;

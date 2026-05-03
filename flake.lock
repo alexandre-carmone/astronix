@@ -43,11 +43,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775425411,
-        "narHash": "sha256-KY6HsebJHEe5nHOWP7ur09mb0drGxYSzE3rQxy62rJo=",
+        "lastModified": 1777771528,
+        "narHash": "sha256-YycygK6n7KeW1YCobdFJcORWzkmrvNcp6xT+IovA0d4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "0d02ec1d0a05f88ef9e74b516842900c41f0f2fe",
+        "rev": "0585fbf645640973e3398863bbaf3bd1ddce4a51",
         "type": "github"
       },
       "original": {
@@ -65,11 +65,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775153946,
-        "narHash": "sha256-qwscL94rENDe301j33QLotuI8+a8QgmBw3I2ir9fKZU=",
+        "lastModified": 1777781853,
+        "narHash": "sha256-O8/iGqnlzGYnLaJppG546jYjcz2BREC2tdxDQiHkeBk=",
         "owner": "pfassina",
         "repo": "lazyvim-nix",
-        "rev": "c1c27d9b3fd74d243a34985c5440a14aa0c2a169",
+        "rev": "695c69b63a4b2a536a5615636de3c6991ed4b3ea",
         "type": "github"
       },
       "original": {
@@ -97,11 +97,11 @@
     "nvim-config": {
       "flake": false,
       "locked": {
-        "lastModified": 1777298290,
-        "narHash": "sha256-c6xi+WU7cyMOiQtI4FG1wcqbuwvmosxs73z3oYN8ll0=",
+        "lastModified": 1777629982,
+        "narHash": "sha256-kbEtvccT8cJbyQGvnGIfwoKv7mi8nwszET0PJ2ksSWE=",
         "owner": "alexandre-carmone",
         "repo": "nvim",
-        "rev": "ad2aebadfba16d2f12a99484dfed8ccaff10a0ad",
+        "rev": "58aa2a6451913b11f3d50c4ec115547e095cedef",
         "type": "github"
       },
       "original": {
@@ -119,17 +119,17 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1777579029,
-        "narHash": "sha256-8og1sBDvQi2SRq6lbuU89dpGXeQZ7rcUm/zQP27TKrY=",
-        "ref": "refs/heads/main",
-        "rev": "b931846801378e3dfe616e14700dd5af35e9ff05",
-        "revCount": 114,
-        "type": "git",
-        "url": "file:///home/alexandre/PycharmProjects/rekos-web"
+        "lastModified": 1777662211,
+        "narHash": "sha256-vUH5Wkojza4zHYwA596086cOEzHE+02ip6IFjEfwdnU=",
+        "owner": "alexandre-carmone",
+        "repo": "ekos-web-rust",
+        "rev": "6af059626c8c45ccd785da47f36d3227fc6094e8",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/alexandre/PycharmProjects/rekos-web"
+        "owner": "alexandre-carmone",
+        "repo": "ekos-web-rust",
+        "type": "github"
       }
     },
     "root": {
