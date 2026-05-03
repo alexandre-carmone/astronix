@@ -37,7 +37,6 @@
     };
   };
 
-  #services.xserver.xkb.options = "caps:swapescape";
   services.printing.enable = true;
   programs.firefox.enable = true;
 
@@ -94,6 +93,16 @@
   };
 
 
-  systemd.services.rustdesk-flutter.enable = true;
+  systemd.services.rustdesk = {
+    description = "RustDesk remote desktop service";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.rustdesk-flutter}/bin/rustdesk --service";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+  };
 
 }
