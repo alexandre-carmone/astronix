@@ -61,6 +61,16 @@ in
             default = false;
             description = "Whether this is a hidden SSID.";
           };
+          security = lib.mkOption {
+            type = lib.types.enum [ "wpa-psk" "sae" "none" ];
+            default = "wpa-psk";
+            description = ''
+              Wifi security protocol:
+              - "wpa-psk": WPA/WPA2 Personal (most home networks).
+              - "sae":     WPA3 Personal. Use for pure-WPA3 APs.
+              - "none":    open network, no passphrase (PSK env var ignored).
+            '';
+          };
         };
       });
     };
@@ -83,6 +93,17 @@ in
         default = "bg";
         description = "Wifi band: bg (2.4 GHz, best range/compat) or a (5 GHz).";
       };
+
+      security = lib.mkOption {
+        type = lib.types.enum [ "wpa-psk" "sae" "none" ];
+        default = "wpa-psk";
+        description = ''
+          Hotspot security protocol:
+          - "wpa-psk": WPA2 Personal (broadest client compatibility).
+          - "sae":     WPA3 Personal. Some older clients can't join.
+          - "none":    open AP, no passphrase (passphrase ignored).
+        '';
+      };
     };
   };
 
@@ -102,7 +123,7 @@ in
 
       profiles = (lib.mapAttrs' (name: net:
         let key = lib.toUpper name; in
-        lib.nameValuePair "wifi-${name}" {
+        lib.nameValuePair "wifi-${name}" ({
           connection = {
             id = "wifi-${name}";
             type = "wifi";
@@ -113,13 +134,14 @@ in
             mode = "infrastructure";
             ssid = "$" + key + "_SSID";
           } // lib.optionalAttrs net.hidden { hidden = true; };
-          wifi-security = {
-            "key-mgmt" = "wpa-psk";
-            psk = "$" + key + "_PSK";
-          };
           ipv4.method = "auto";
           ipv6.method = "auto";
-        }
+        } // lib.optionalAttrs (net.security != "none") {
+          wifi-security = {
+            "key-mgmt" = net.security;
+            psk = "$" + key + "_PSK";
+          };
+        })
       ) cfg.networks) // {
         astronix-hotspot = {
           connection = {
@@ -134,12 +156,13 @@ in
             band = cfg.hotspot.band;
             ssid = cfg.hotspot.ssid;
           };
-          wifi-security = {
-            "key-mgmt" = "wpa-psk";
-            psk = cfg.hotspot.passphrase;
-          };
           ipv4.method = "shared";
           ipv6.method = "ignore";
+        } // lib.optionalAttrs (cfg.hotspot.security != "none") {
+          wifi-security = {
+            "key-mgmt" = cfg.hotspot.security;
+            psk = cfg.hotspot.passphrase;
+          };
         };
       };
     };

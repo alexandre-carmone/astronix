@@ -25,11 +25,12 @@
   services.astronix.wifi = {
     enable = true;
     networks = {
-      home = { priority = 20; };
+      home = { priority = 20; security= "sae"};
     };
     hotspot = {
       ssid = "astronix";
       passphrase = "astronix-hotspot";
+      security = "wpa-psk"
     };
   };
 
