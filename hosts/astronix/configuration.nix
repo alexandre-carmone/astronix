@@ -23,6 +23,19 @@
     enable = true;
     ports = [22];
   };
+
+  services.astronix.wifi = {
+    enable = true;
+    networks = {
+      home = { priority = 20; };
+      phone = { priority = 30; };
+    };
+    hotspot = {
+      ssid = "astronix";
+      passphrase = "astronix-hotspot";
+    };
+  };
+
   services.xserver.xkb.options = "caps:swapescape";
   services.printing.enable = true;
   programs.firefox.enable = true;

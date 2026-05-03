@@ -1,3 +1,22 @@
+# Example usage:
+#
+#   services.astronix.wifi = {
+#     enable = true;
+#     networks = {
+#       home = { priority = 20; };
+#       phone = { priority = 30; };
+#     };
+#     hotspot = {
+#       ssid = "astronix";
+#       passphrase = "astronix-hotspot";
+#     };
+#   };
+#
+# Then create /etc/astronix/wifi.env (root, 0600):
+#   HOME_SSID=MyHomeNet
+#   HOME_PSK=supersecret
+#   PHONE_SSID=AlexPhone
+#   PHONE_PSK=hotspotpass
 { config, lib, pkgs, ... }:
 
 let
