@@ -26,7 +26,6 @@
     enable = true;
     networks = {
       home = { priority = 20; };
-      phone = { priority = 30; };
     };
     hotspot = {
       ssid = "astronix";
@@ -34,7 +33,7 @@
     };
   };
 
-  services.xserver.xkb.options = "caps:swapescape";
+  #services.xserver.xkb.options = "caps:swapescape";
   services.printing.enable = true;
   programs.firefox.enable = true;
 
