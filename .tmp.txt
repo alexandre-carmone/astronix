@@ -1,0 +1,5 @@
+sudo cat                                                  
+  /etc/NetworkManager/system-connections/wifi-home.nmconnection      
+  nmcli -f NAME,TYPE,AUTOCONNECT,AUTOCONNECT-PRIORITY connection show
+  nmcli device wifi list                                             
+  sudo journalctl -u NetworkManager -b --no-pager | tail -80
