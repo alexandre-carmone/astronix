@@ -11,6 +11,10 @@
       url = "github:alexandre-carmone/ekos-web-rust";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    kstars-headless = {
+      url = "github:alexandre-carmone/kstars-headless";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nvim-config = {
       url = "github:alexandre-carmone/nvim";
       flake = false;
@@ -29,6 +33,7 @@
         ./hosts/astronix/configuration.nix
         home-manager.nixosModules.home-manager
         inputs.rekos-web.nixosModules.default
+        inputs.kstars-headless.nixosModules.default
       ];
     };
 

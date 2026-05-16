@@ -53,6 +53,17 @@
     pkgs.indi-3rdparty.indi-toupbase
   ];
 
+  services.kstars-headless = {
+    enable = true;
+
+    ekosLive  = {
+        user = "test";
+        url = "localhost:8080";
+        password = "test"
+    };
+     
+  };
+
   services.rekos-web = {
     enable = true;
     openFirewall = true;
@@ -79,7 +90,6 @@
     rustup
     ghostty
     rustdesk-flutter
-    kstars
     phd2
     siril
     gimp
