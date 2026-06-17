@@ -53,18 +53,7 @@
     pkgs.indi-3rdparty.indi-toupbase
   ];
 
-  services.kstars-headless = {
-    enable = true;
-
-    ekosLive  = {
-        user = "test";
-        url = "localhost:8080";
-        password = "test"
-    };
-     
-  };
-
-  services.rekos-web = {
+  services.junos-web = {
     enable = true;
     openFirewall = true;
 
