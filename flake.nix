@@ -2,9 +2,9 @@
   description = "Nix config for an astrophoto computer";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/e3ed29f0e112ed8e47525ba8b7f19ae0762b0824";
+    nixpkgs.url = "github:NixOS/nixpkgs/9c17c87fd89099bb81b527f2f101a07a7827a79b";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     rekos-web = {

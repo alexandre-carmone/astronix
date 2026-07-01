@@ -79,6 +79,7 @@
     rustup
     ghostty
     rustdesk-flutter
+    kstars
     phd2
     siril
     gimp
