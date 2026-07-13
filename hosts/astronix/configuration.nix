@@ -78,6 +78,7 @@
     cargo
     rustup
     ghostty
+    btop
     rustdesk-flutter
     kstars
     phd2
@@ -86,24 +87,27 @@
     indi-full
     indi-3rdparty.indi-toupbase
   ];
-
+  nix.settings = {
+    max-jobs = 1;        # nombre de builds en parallèle (1 = un seul à la fois)
+    cores = 1;            # cores par build (0 = tous les cores disponibles)
+  };
   networking.firewall = {
     allowedTCPPorts = [ 21115 21116 21117 21118 21119 ];
     allowedUDPPorts = [ 21116 ];
   };
 
 
-  systemd.user.services.rustdesk = {
-    description = "RustDesk";
-    wantedBy = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.rustdesk-flutter}/bin/rustdesk";
-      Restart = "on-failure";
-      RestartSec = 5;
-    };
-  };
+  # systemd.user.services.rustdesk = {
+  #  description = "RustDesk";
+  #  wantedBy = [ "graphical-session.target" ];
+  #  partOf = [ "graphical-session.target" ];
+  #  after = [ "graphical-session.target" ];
+  #    serviceConfig = {
+    #  Type = "simple";
+    #  ExecStart = "${pkgs.rustdesk-flutter}/bin/rustdesk";
+    #  Restart = "on-failure";
+    #  RestartSec = 5;
+    #};
+  #};
 
 }

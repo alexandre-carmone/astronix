@@ -2,17 +2,13 @@
   description = "Nix config for an astrophoto computer";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/9c17c87fd89099bb81b527f2f101a07a7827a79b";
+    nixpkgs.url = "github:alexandre-carmone/nixpkgs/f85f21a05ffc49fbdf4e3fb3c7be56ec8f0a2c4a";
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     rekos-web = {
       url = "github:alexandre-carmone/ekos-web-rust";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    kstars-headless = {
-      url = "github:alexandre-carmone/kstars-headless";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nvim-config = {
@@ -33,7 +29,6 @@
         ./hosts/astronix/configuration.nix
         home-manager.nixosModules.home-manager
         inputs.rekos-web.nixosModules.default
-        inputs.kstars-headless.nixosModules.default
       ];
     };
 
