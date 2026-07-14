@@ -101,17 +101,17 @@
   IdleAction = "ignore";
 };
 
-  # systemd.user.services.rustdesk = {
-  #  description = "RustDesk";
-  #  wantedBy = [ "graphical-session.target" ];
-  #  partOf = [ "graphical-session.target" ];
-  #  after = [ "graphical-session.target" ];
-  #    serviceConfig = {
-    #  Type = "simple";
-    #  ExecStart = "${pkgs.rustdesk-flutter}/bin/rustdesk";
-    #  Restart = "on-failure";
-    #  RestartSec = 5;
-    #};
-  #};
+   systemd.user.services.rustdesk = {
+    description = "RustDesk";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+      serviceConfig = {
+     Type = "simple";
+      ExecStart = "${pkgs.rustdesk-flutter}/bin/rustdesk";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+  };
 
 }
