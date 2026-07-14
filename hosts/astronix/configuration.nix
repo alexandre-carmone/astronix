@@ -89,13 +89,17 @@
   ];
   nix.settings = {
     max-jobs = 1;        # nombre de builds en parallèle (1 = un seul à la fois)
-    cores = 1;            # cores par build (0 = tous les cores disponibles)
+    cores = 0;            # cores par build (0 = tous les cores disponibles)
   };
   networking.firewall = {
     allowedTCPPorts = [ 21115 21116 21117 21118 21119 ];
     allowedUDPPorts = [ 21116 ];
   };
-
+  
+  services.logind.settings.Login = {
+  HandleLidSwitch = "ignore";
+  IdleAction = "ignore";
+};
 
   # systemd.user.services.rustdesk = {
   #  description = "RustDesk";
