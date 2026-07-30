@@ -51,14 +51,15 @@
   services.udev.packages = [
     pkgs.indi-full
     pkgs.indi-3rdparty.indi-toupbase
+    pkgs.indi-3rdparty.indi-playerone
   ];
 
   services.junos-web = {
     enable = true;
     openFirewall = true;
 
-    capturesDir = "/home/alexandre/Pictures/astro";
-
+    capturesDir = "/run/media/alexandre/datas/astrophoto";
+    dsoTileDir = "/run/media/alexandre/datas/dso";
     httpAddr  = "0.0.0.0:8080";
     httpsAddr = "0.0.0.0:8443";
 
@@ -86,6 +87,7 @@
     gimp
     indi-full
     indi-3rdparty.indi-toupbase
+    indi-3rdparty.indi-playerone
   ];
   nix.settings = {
     max-jobs = 1;        # nombre de builds en parallèle (1 = un seul à la fois)
