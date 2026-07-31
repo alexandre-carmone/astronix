@@ -7,10 +7,6 @@
   nixpkgs.overlays = [ inputs.lazyvim.overlays.default ];
 
   home-manager.useUserPackages = true; home-manager.useGlobalPkgs = true; home-manager.extraSpecialArgs = { inherit inputs; };
-  # home-manager.users.alexandre = { ... }: { imports = [
-  #     inputs.lazyvim.homeManagerModules.default "${inputs.nvim-config}/nix/home.nix"
-  #   ];
-  # };
 
   boot.loader.systemd-boot.enable = true; boot.loader.efi.canTouchEfiVariables = true;
 
@@ -48,19 +44,6 @@
     ];
    };
 
-
-  programs.ghostty = {
-    enable = true;
-    settings = {
-      theme = "catppuccin-latte";
-      font-family = "JetBrainsMono Nerd Font";
-      font-size = 14;
-      window-padding-x = 10;
-      window-padding-y = 10;
-      background-opacity = 0.95;
-    };
-  };
-
   environment.systemPackages = with pkgs; [
      fd
      ripgrep
@@ -73,6 +56,7 @@
      brave
      lua
      luarocks
+     ghostty
      qwerty-fr
      lazygit
      btop
