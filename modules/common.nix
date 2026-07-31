@@ -36,20 +36,44 @@
       };
     };
   };
-
-  nixpkgs.config.allowUnfree = true;
+  programs.fzf.fuzzyCompletion = true;
   programs.neovim.enable = true;
+  programs.neovim.defaultEditor = true;
+  nixpkgs.config.allowUnfree = true;
 
+  programs.chromium = {
+    enable = true;
+    extensions = [
+      "nngceckbapebfimnlniiiahkandclblb" # Bitwarden
+    ];
+   };
   environment.systemPackages = with pkgs; [
+     fd
+     ripgrep
      wget
      git
      uv
      zellij
      brave
+     lua
+     luarocks
+     ghostty
+     qwerty-fr
+     lazygit
+     btop
   ];
-
+ services.xserver.xkb = {
+    layout = "us_qwerty-fr";
+    extraLayouts = {
+      us_qwerty-fr = {
+        description = "";
+        languages = [ "eng" ];
+        symbolsFile = "${pkgs.qwerty-fr}/share/X11/xkb/symbols/us_qwerty-fr";
+      };
+    };
+  };  
   programs.lazygit.enable = true;
   services.openssh.enable = true;
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }

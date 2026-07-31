@@ -15,7 +15,7 @@
 
   # To disable installing GNOME's suite of applications
   # and only be left with GNOME shell.
-  services.gnome.core-apps.enable = false;
+  services.gnome.core-apps.enable = true;
   services.gnome.core-developer-tools.enable = false;
   services.gnome.games.enable = false;
   environment.gnome.excludePackages = with pkgs; [ gnome-tour gnome-user-docs ];
@@ -45,11 +45,18 @@
     btop
     ffmpeg
     vlc
+    claude-code
+    ffmpeg
+    fd
 
     gnomeExtensions.blur-my-shell
     gnomeExtensions.just-perfection
     adwaita-icon-theme
     gnomeExtensions.arc-menu
+  ];
+
+    security.pki.certificateFiles = [
+    ./certs/bundle.crt
   ];
 
 environment.etc."ssl/openssl-legacy.cnf".text = ''
