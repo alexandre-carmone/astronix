@@ -40,8 +40,15 @@
     enable = true; alsa.enable = true; alsa.support32Bit = true; pulse.enable = true;
   };
 
-  users.users.alexandre = { isNormalUser = true; description = "alexandre"; extraGroups = [ "networkmanager" "wheel" ];
+  users.users.alexandre = { isNormalUser = true; description = "alexandre"; extraGroups = [ "networkmanager" "wheel" "plugdev" ];
   };
+
+  hardware.keyboard.qmk.enable = true;
+
+  # splitkb.com Halcyon Elora rev2 (VIA/WebHID raw HID access for live config)
+  services.udev.extraRules = ''
+    SUBSYSTEM=="hidraw", ATTRS{idVendor}=="8d1d", ATTRS{idProduct}=="a392", TAG+="uaccess"
+  '';
 
   services.keyd = { enable = true; keyboards.default = {
       ids = [ "*" ]; settings.main = {
@@ -81,7 +88,7 @@
     layout = "us_qwerty-fr";
     extraLayouts = {
       us_qwerty-fr = {
-        description = "";
+        description = "US keyboard with French symbols (AltGr)";
         languages = [ "eng" ];
         symbolsFile = "${pkgs.qwerty-fr}/share/X11/xkb/symbols/us_qwerty-fr";
       };

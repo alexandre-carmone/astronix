@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports = [
@@ -30,6 +30,7 @@
         };
         "org/gnome/desktop/input-sources" = {
           xkb-options = [ "nocaps:escape"];
+          sources = [ (lib.gvariant.mkTuple [ "xkb" "us_qwerty-fr" ]) ];
         };
       };
     }
