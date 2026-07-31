@@ -40,24 +40,39 @@
   programs.neovim.enable = true;
   programs.neovim.defaultEditor = true;
   nixpkgs.config.allowUnfree = true;
-
+  programs.nix-ld.enable = true;
   programs.chromium = {
     enable = true;
     extensions = [
       "nngceckbapebfimnlniiiahkandclblb" # Bitwarden
     ];
    };
+
+
+  programs.ghostty = {
+    enable = true;
+    settings = {
+      theme = "catppuccin-latte";
+      font-family = "JetBrainsMono Nerd Font";
+      font-size = 14;
+      window-padding-x = 10;
+      window-padding-y = 10;
+      background-opacity = 0.95;
+    };
+  };
+
   environment.systemPackages = with pkgs; [
      fd
      ripgrep
      wget
+     unzip
      git
      uv
+     cargo
      zellij
      brave
      lua
      luarocks
-     ghostty
      qwerty-fr
      lazygit
      btop
