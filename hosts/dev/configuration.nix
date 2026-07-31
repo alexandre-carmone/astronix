@@ -3,6 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./displaylink.nix
     ../../modules/common.nix
   ];
 
