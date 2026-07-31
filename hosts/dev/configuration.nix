@@ -36,6 +36,12 @@
       };
     }
   ];
+  services.udev.packages = [
+    pkgs.indi-full
+    pkgs.indi-3rdparty.indi-toupbase
+    pkgs.indi-3rdparty.indi-playerone
+  ];
+
 
   environment.systemPackages = with pkgs; [
     gcc
@@ -50,6 +56,16 @@
     claude-code
     ffmpeg
     fd
+    
+    # astro config
+    rustdesk-flutter
+    kstars
+    phd2
+    siril
+    gimp
+    indi-full
+    indi-3rdparty.indi-toupbase
+    indi-3rdparty.indi-playerone
 
     gnomeExtensions.blur-my-shell
     gnomeExtensions.just-perfection
