@@ -2,11 +2,22 @@
 
 { imports = [
     ./zsh.nix
-  ]; nix.settings.experimental-features = [ "nix-command" "flakes" ];
+]; 
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   nixpkgs.overlays = [ inputs.lazyvim.overlays.default ];
 
   home-manager.useUserPackages = true; home-manager.useGlobalPkgs = true; home-manager.extraSpecialArgs = { inherit inputs; };
+
+  home-manager.users.alexandre = { pkgs, ... }: {
+    programs.ghostty = {
+      enable = true;
+      settings = {
+        theme = "catppuccin-latte";
+      };
+    };
+    home.stateVersion = "26.05";
+  };
 
   boot.loader.systemd-boot.enable = true; boot.loader.efi.canTouchEfiVariables = true;
 
@@ -56,7 +67,6 @@
      brave
      lua
      luarocks
-     ghostty
      qwerty-fr
      lazygit
      btop
