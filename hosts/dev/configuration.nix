@@ -19,7 +19,37 @@
   services.gnome.core-apps.enable = true;
   services.gnome.core-developer-tools.enable = false;
   services.gnome.games.enable = false;
-  environment.gnome.excludePackages = with pkgs; [ gnome-tour gnome-user-docs ];
+  # Disable GNOME core apps we don't use, keeping only:
+  # Files (nautilus), Disk Usage Analyzer (baobab), Settings (gnome-control-center),
+  # and Disks (gnome-disk-utility, enabled separately via programs.gnome-disks).
+  environment.gnome.excludePackages = with pkgs; [
+    gnome-tour
+    gnome-user-docs
+    decibels
+    epiphany
+    gnome-text-editor
+    gnome-calculator
+    gnome-calendar
+    gnome-characters
+    gnome-clocks
+    gnome-console
+    gnome-contacts
+    gnome-font-viewer
+    gnome-logs
+    gnome-maps
+    gnome-music
+    gnome-system-monitor
+    gnome-tecla
+    gnome-weather
+    loupe
+    papers
+    gnome-connections
+    showtime
+    simple-scan
+    snapshot
+    yelp
+    seahorse
+  ];
 
   services.printing.enable = true;
   programs.dconf.profiles.user.databases = [
