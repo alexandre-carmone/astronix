@@ -15,19 +15,17 @@
       url = "github:alexandre-carmone/nvim";
       flake = false;
     };
-    lazyvim = {
-      url = "github:pfassina/lazyvim-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    catppuccin.url = "github:catppuccin/nix/release-26.05";
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, catppuccin, ... }@inputs: {
     nixosConfigurations.astronix = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; };
       modules = [
         ./hosts/astronix/configuration.nix
         home-manager.nixosModules.home-manager
+        catppuccin.nixosModules.catppuccin
         inputs.rekos-web.nixosModules.default
       ];
     };
@@ -38,6 +36,7 @@
       modules = [
         ./hosts/dev/configuration.nix
         home-manager.nixosModules.home-manager
+        catppuccin.nixosModules.catppuccin
       ];
     };
   };

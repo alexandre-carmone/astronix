@@ -5,16 +5,18 @@
 ]; 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  nixpkgs.overlays = [ inputs.lazyvim.overlays.default ];
 
-  home-manager.useUserPackages = true; home-manager.useGlobalPkgs = true; home-manager.extraSpecialArgs = { inherit inputs; };
+  home-manager.useUserPackages = true;
+  home-manager.useGlobalPkgs = true;
+  home-manager.extraSpecialArgs = { inherit inputs; };
 
-  home-manager.users.alexandre = { pkgs, ... }: {
+  home-manager.users.alexandre = { pkgs, inputs, ... }: {
+    imports = [ inputs.catppuccin.homeModules.catppuccin ];
+    catppuccin.enable = true;
+    catppuccin.flavor = "latte";
+    catppuccin.ghostty.enable = true;
     programs.ghostty = {
       enable = true;
-      settings = {
-        theme = "catppuccin-latte";
-      };
     };
     home.stateVersion = "26.05";
   };
