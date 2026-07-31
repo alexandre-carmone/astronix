@@ -14,10 +14,14 @@
     imports = [ inputs.catppuccin.homeModules.catppuccin ];
     catppuccin.enable = true;
     catppuccin.flavor = "latte";
+    catppuccin.accent = "blue";
     catppuccin.ghostty.enable = true;
+    catppuccin.gtk.icon.enable = true;
+    catppuccin.cursors.enable = true;
     programs.ghostty = {
       enable = true;
     };
+    home.pointerCursor.gtk.enable = true;
     home.stateVersion = "26.05";
   };
 
