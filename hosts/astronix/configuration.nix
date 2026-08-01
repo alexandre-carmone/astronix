@@ -3,31 +3,20 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./headless.nix
     ../../modules/common.nix
+    ../../modules/astro.nix
+    ../../modules/desktop-plasma.nix
     ../../modules/wifi-hotspot.nix
   ];
 
   networking.hostName = "astronomix";
-
-  # Generate a fake EDID and pin it to HDMI-A-1 so the connector is
-  # always reported connected at 1920x1080 from boot, whether or not a
-  # real monitor is plugged in. Without this Xorg falls back to 1024x768.
-  hardware.display.edid.modelines."FHD_60" =
-    "173.00 1920 2048 2248 2576 1080 1083 1088 1120 -hsync +vsync";
-  hardware.display.outputs."HDMI-A-1".edid = "FHD_60.bin";
-  hardware.display.outputs."HDMI-A-1".mode = "e";
-  services.openssh = {
-    enable = true;
-    ports = [22];
-  };
 
   services.astronix.wifi = {
     enable = true;
     networks = {
       home = {
         priority = 20;
-        security= "sae";
+        security = "sae";
       };
     };
     hotspot = {
@@ -36,23 +25,6 @@
       security = "wpa-psk";
     };
   };
-
-  services.printing.enable = true;
-  programs.firefox.enable = true;
-
-  users.users.alexandre.packages = with pkgs; [
-    kdePackages.kate
-  ];
-  users.users.alexandre = {
-  isNormalUser = true;
-  extraGroups = [ "wheel" "dialout" ];  
-
-  };
-  services.udev.packages = [
-    pkgs.indi-full
-    pkgs.indi-3rdparty.indi-toupbase
-    pkgs.indi-3rdparty.indi-playerone
-  ];
 
   services.junos-web = {
     enable = true;
@@ -74,46 +46,37 @@
     #tls.cert = "/run/secrets/rekos-cert.pem";
     #tls.key  = "/run/secrets/rekos-key.pem";
   };
-    
+
   environment.systemPackages = with pkgs; [
-    cargo
     rustup
     ghostty
-    btop
-    rustdesk-flutter
-    kstars
-    phd2
-    siril
-    gimp
-    indi-full
-    indi-3rdparty.indi-toupbase
-    indi-3rdparty.indi-playerone
   ];
+
   nix.settings = {
     max-jobs = 1;        # nombre de builds en parallèle (1 = un seul à la fois)
     cores = 0;            # cores par build (0 = tous les cores disponibles)
   };
+
   networking.firewall = {
     allowedTCPPorts = [ 21115 21116 21117 21118 21119 ];
     allowedUDPPorts = [ 21116 ];
   };
-  
-  services.logind.settings.Login = {
-  HandleLidSwitch = "ignore";
-  IdleAction = "ignore";
-};
 
-   systemd.user.services.rustdesk = {
+  services.logind.settings.Login = {
+    HandleLidSwitch = "ignore";
+    IdleAction = "ignore";
+  };
+
+  systemd.user.services.rustdesk = {
     description = "RustDesk";
     wantedBy = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
     after = [ "graphical-session.target" ];
-      serviceConfig = {
-     Type = "simple";
+    serviceConfig = {
+      Type = "simple";
       ExecStart = "${pkgs.rustdesk-flutter}/bin/rustdesk";
       Restart = "on-failure";
       RestartSec = 5;
     };
   };
-
 }

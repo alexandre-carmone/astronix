@@ -1,5 +1,10 @@
+{ pkgs, ... }:
 
-{ config, pkgs, ... }:
+# Headless Plasma desktop for the astrophoto rig: Plasma 6 on X11 with SDDM
+# autologin and xrdp for remote access. A fake EDID is pinned to HDMI-A-1 so the
+# connector always reports connected at 1920x1080 from boot, whether or not a
+# real monitor is plugged in (without it Xorg falls back to 1024x768), and the
+# matching Xorg modelines are declared so the virtual display can be resized.
 {
   services.displayManager.defaultSession = "plasmax11";
   services.displayManager.sddm = {
@@ -16,10 +21,20 @@
     openFirewall = true;
   };
   services.desktopManager.plasma6.enable = true;
+
+  # Keyboard layout for the local/remote session (overrides the qwerty-fr default
+  # from modules/input.nix on this headless host).
   services.xserver.xkb = {
     layout = "us";
     variant = "";
   };
+
+  # Fake EDID pinned to HDMI-A-1 so the connector is always reported connected at
+  # 1920x1080 from boot.
+  hardware.display.edid.modelines."FHD_60" =
+    "173.00 1920 2048 2248 2576 1080 1083 1088 1120 -hsync +vsync";
+  hardware.display.outputs."HDMI-A-1".edid = "FHD_60.bin";
+  hardware.display.outputs."HDMI-A-1".mode = "e";
 
   services.xserver = {
     enable = true;
@@ -42,4 +57,8 @@
       EndSubSection
     '';
   };
+
+  users.users.alexandre.packages = with pkgs; [
+    kdePackages.kate
+  ];
 }

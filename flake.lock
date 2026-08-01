@@ -87,22 +87,6 @@
         "type": "github"
       }
     },
-    "nvim-config": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1778001473,
-        "narHash": "sha256-TdRSBSPwdvwKiSuuh+uyRoV3BkcI2dgjUhNl5zFVTYk=",
-        "owner": "alexandre-carmone",
-        "repo": "nvim",
-        "rev": "51981cede88f7514c0aa60d8c365552ce382820a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "alexandre-carmone",
-        "repo": "nvim",
-        "type": "github"
-      }
-    },
     "rekos-web": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -130,7 +114,6 @@
         "catppuccin": "catppuccin",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs_2",
-        "nvim-config": "nvim-config",
         "rekos-web": "rekos-web"
       }
     },

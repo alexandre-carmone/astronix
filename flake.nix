@@ -11,10 +11,6 @@
       url = "github:alexandre-carmone/ekos-web-rust";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nvim-config = {
-      url = "github:alexandre-carmone/nvim";
-      flake = false;
-    };
     catppuccin.url = "github:catppuccin/nix/release-26.05";
   };
 
