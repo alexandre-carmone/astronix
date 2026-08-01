@@ -11,6 +11,11 @@
 
   networking.hostName = "dev";
 
+  # Synaptics fingerprint reader (USB 06cb:00f0) — supported by the open
+  # libfprint "synaptics" driver. NixOS wires pam_fprintd into PAM automatically
+  # (GDM login, screen unlock, sudo). Enroll with `fprintd-enroll` after rebuild.
+  services.fprintd.enable = true;
+
   environment.systemPackages = with pkgs; [
     gcc
     gnumake
