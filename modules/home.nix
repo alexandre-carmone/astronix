@@ -19,10 +19,14 @@
     catppuccin.gtk.icon.enable = true;
     catppuccin.cursors.enable = true;
     catppuccin.zellij.enable = true;
+    catppuccin.btop.enable = true;
     programs.ghostty = {
       enable = true;
     };
     programs.zellij = {
+      enable = true;
+    };
+    programs.btop = {
       enable = true;
     };
     home.pointerCursor.gtk.enable = true;
