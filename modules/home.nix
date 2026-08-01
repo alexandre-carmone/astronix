@@ -20,6 +20,7 @@
     catppuccin.cursors.enable = true;
     catppuccin.zellij.enable = true;
     catppuccin.btop.enable = true;
+    catppuccin.k9s.enable = true;
     programs.ghostty = {
       enable = true;
     };
@@ -27,6 +28,9 @@
       enable = true;
     };
     programs.btop = {
+      enable = true;
+    };
+    programs.k9s = {
       enable = true;
     };
     home.pointerCursor.gtk.enable = true;
