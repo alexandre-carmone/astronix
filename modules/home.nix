@@ -21,6 +21,7 @@
     catppuccin.zellij.enable = true;
     catppuccin.btop.enable = true;
     catppuccin.k9s.enable = true;
+    catppuccin.lazygit.enable = true;
     programs.ghostty = {
       enable = true;
     };
@@ -31,6 +32,9 @@
       enable = true;
     };
     programs.k9s = {
+      enable = true;
+    };
+    programs.lazygit = {
       enable = true;
     };
     home.pointerCursor.gtk.enable = true;
