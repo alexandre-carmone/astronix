@@ -6,6 +6,7 @@
     ../../modules/common.nix
     ../../modules/astro.nix
     ../../modules/desktop-gnome.nix
+    ../../modules/docker.nix
     ./displaylink.nix
   ];
 

@@ -25,6 +25,7 @@ modules/
   astro.nix            shared astrophotography stack (INDI + apps)
   desktop-plasma.nix   headless Plasma/xrdp desktop (astronix)
   desktop-gnome.nix    GNOME desktop (dev)
+  docker.nix           Docker engine + CLI, user in docker group (dev)
   wifi-hotspot.nix     services.astronix.wifi module (astronix)
 hosts/
   astronix/            configuration.nix + hardware-configuration.nix
