@@ -25,7 +25,7 @@ users.users.alexandre.shell = pkgs.zsh;
 
 programs.zsh.ohMyZsh = {
     enable = true;
-    plugins = [ "git" "zsh-interactive-cd" "history-substring-search"];
+    plugins = [ "git" "zsh-interactive-cd" "history-substring-search" "docker" "docker-compose" "cp" "uv" "colorize" "k9s"];
     theme = "skaro";
   };
 
