@@ -27,6 +27,23 @@
     };
     programs.zellij = {
       enable = true;
+      # Move Zellij's "Move" mode off Ctrl+h (clashes with nvim's <C-h> split
+      # navigation) onto Ctrl+m. Layered on top of the compiled-in defaults, so
+      # we only unbind Ctrl+h and add Ctrl+m in the two places the default uses it.
+      # NOTE: Ctrl+m == Enter at the byte level; this only stays distinct because
+      # Ghostty + Zellij both speak the Kitty keyboard protocol.
+      extraConfig = ''
+        keybinds {
+          shared_except "move" "locked" {
+            unbind "Ctrl h"
+            bind "Ctrl m" { SwitchToMode "Move"; }
+          }
+          move {
+            unbind "Ctrl h"
+            bind "Ctrl m" { SwitchToMode "Normal"; }
+          }
+        }
+      '';
     };
     programs.btop = {
       enable = true;
