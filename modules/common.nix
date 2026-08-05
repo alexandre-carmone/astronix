@@ -59,6 +59,7 @@
     qwerty-fr
     lazygit
     btop
+    wl-clipboard
   ];
 
   system.stateVersion = "26.05";
