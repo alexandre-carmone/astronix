@@ -8,6 +8,7 @@
     ../../modules/desktop-gnome.nix
     ../../modules/docker.nix
     ../../modules/wine.nix
+    ../../modules/autostakkert.nix
     ./displaylink.nix
   ];
 
