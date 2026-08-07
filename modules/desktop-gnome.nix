@@ -55,11 +55,21 @@
           xkb-options = [ "nocaps:escape" ];
           sources = [ (lib.gvariant.mkTuple [ "xkb" "us_qwerty-fr" ]) ];
         };
+        "org/gnome/shell" = {
+          disable-user-extensions = false;
+          enabled-extensions = [
+            "tilingshell@ferrarodomenico.com"
+            "blur-my-shell@aunetx"
+            "just-perfection-desktop@just-perfection"
+            "arcmenu@arcmenu.com"
+          ];
+        };
       };
     }
   ];
 
   environment.systemPackages = with pkgs; [
+    gnomeExtensions.tiling-shell
     gnomeExtensions.blur-my-shell
     gnomeExtensions.just-perfection
     gnomeExtensions.arc-menu
