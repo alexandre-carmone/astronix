@@ -3,6 +3,8 @@
 # Astrophotography stack shared by both hosts: INDI drivers (via udev) and the
 # desktop apps used to capture/process (kstars, phd2, siril, gimp) plus rustdesk
 # for remote control of the rig.
+#
+# ImPPG (post-processing/sharpening) lives in its own module, ./imppg.nix.
 let
   # Siril 1.4's Python scripts (the .py from its script repository) run in a
   # venv that Siril builds itself and pip-installs numpy/scipy/PyQt6/sirilpy
@@ -48,6 +50,8 @@ let
   };
 in
 {
+  imports = [ ./imppg.nix ];
+
   services.udev.packages = [
     pkgs.indi-full
     pkgs.indi-3rdparty.indi-toupbase
