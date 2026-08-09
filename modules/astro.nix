@@ -63,6 +63,7 @@ in
     phd2
     siril
     gimp
+    nomacs # fast image viewer for browsing/comparing captured & stacked frames
     rustdesk-flutter
     indi-full
     indi-3rdparty.indi-toupbase
