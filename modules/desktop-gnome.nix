@@ -49,7 +49,24 @@
       lockAll = true; # prevents overriding
       settings = {
         "org/gnome/desktop/interface" = {
-          accent-color = "blue";
+          # GNOME's accent enum has no "mauve"; "purple" is the closest match to
+          # the Catppuccin mauve accent set in home.nix.
+          accent-color = "purple";
+          color-scheme = "prefer-dark";
+        };
+        # Wallpaper. Locked by lockAll, so it's managed here rather than via the
+        # GUI. Point these at a real Siril/ImPPG export and rebuild.
+        "org/gnome/desktop/background" = {
+          picture-uri = "file:///home/alexandre/Pictures/wallpapers/master_noth_american.png"; # PLACEHOLDER
+          picture-uri-dark = "file:///home/alexandre/Pictures/wallpapers/master_noth_american.png"; # PLACEHOLDER
+          picture-options = "zoom";
+        };
+        "org/gnome/desktop/screensaver" = {
+          picture-uri = "file:///home/alexandre/Pictures/wallpapers/master_noth_american.png"; # PLACEHOLDER
+        };
+        "org/gnome/shell/extensions/tilingshell" = {
+          inner-gaps = lib.gvariant.mkUint32 8;
+          outer-gaps = lib.gvariant.mkUint32 8;
         };
         "org/gnome/desktop/input-sources" = {
           xkb-options = [ "nocaps:escape" ];
@@ -62,6 +79,9 @@
             "blur-my-shell@aunetx"
             "just-perfection-desktop@just-perfection"
             "arcmenu@arcmenu.com"
+            "rounded-window-corners@fxgn"
+            "Vitals@CoreCoding.com"
+            "space-bar@luchrioh"
           ];
         };
       };
@@ -73,6 +93,9 @@
     gnomeExtensions.blur-my-shell
     gnomeExtensions.just-perfection
     gnomeExtensions.arc-menu
+    gnomeExtensions.rounded-window-corners-reborn
+    gnomeExtensions.vitals
+    gnomeExtensions.space-bar
     adwaita-icon-theme
   ];
 }

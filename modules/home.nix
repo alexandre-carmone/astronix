@@ -13,8 +13,8 @@
   home-manager.users.alexandre = { pkgs, inputs, ... }: {
     imports = [ inputs.catppuccin.homeModules.catppuccin ];
     catppuccin.enable = true;
-    catppuccin.flavor = "latte";
-    catppuccin.accent = "blue";
+    catppuccin.flavor = "mocha";
+    catppuccin.accent = "mauve";
     catppuccin.ghostty.enable = true;
     catppuccin.gtk.icon.enable = true;
     catppuccin.cursors.enable = true;
