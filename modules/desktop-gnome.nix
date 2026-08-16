@@ -52,7 +52,7 @@
           # GNOME's accent enum has no "mauve"; "purple" is the closest match to
           # the Catppuccin mauve accent set in home.nix.
           accent-color = "purple";
-          color-scheme = "prefer-dark";
+          color-scheme = "prefer-light";
         };
         # Wallpaper. Locked by lockAll, so it's managed here rather than via the
         # GUI. Point these at a real Siril/ImPPG export and rebuild.
@@ -67,6 +67,12 @@
         "org/gnome/shell/extensions/tilingshell" = {
           inner-gaps = lib.gvariant.mkUint32 8;
           outer-gaps = lib.gvariant.mkUint32 8;
+        };
+        # With the light color-scheme, blur-my-shell flips the top-bar text to
+        # dark whenever a light window is maximized behind the panel. Force the
+        # panel text to stay light (Vitals CPU/wifi/etc. readable in all states).
+        "org/gnome/shell/extensions/blur-my-shell/panel" = {
+          force-light-text = true;
         };
         "org/gnome/desktop/input-sources" = {
           xkb-options = [ "nocaps:escape" ];
