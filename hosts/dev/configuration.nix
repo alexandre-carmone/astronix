@@ -26,6 +26,7 @@
     teams-for-linux
     signal-desktop
     vlc
+    #makemkv # decrypt UHD/bus-encrypted Blu-rays to mkv (libaacs/VLC can't)
     claude-code
     ffmpeg
   ];
