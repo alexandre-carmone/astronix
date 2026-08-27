@@ -14,6 +14,11 @@
 
   networking.hostName = "inix";
 
+  # SCSI generic (sg) driver — creates /dev/sgN nodes. MakeMKV talks to the
+  # optical drive through /dev/sg* (raw MMC/AACS commands), not /dev/sr0, so
+  # reading (bus-encrypted UHD) Blu-rays needs this module loaded.
+  boot.kernelModules = [ "sg" ];
+
   # Synaptics fingerprint reader (USB 06cb:00f0) — supported by the open
   # libfprint "synaptics" driver. NixOS wires pam_fprintd into PAM automatically
   # (GDM login, screen unlock, sudo). Enroll with `fprintd-enroll` after rebuild.
