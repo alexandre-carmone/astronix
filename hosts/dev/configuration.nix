@@ -9,10 +9,26 @@
     ../../modules/docker.nix
     ../../modules/wine.nix
     ../../modules/autostakkert.nix
+    ../../modules/syncthing.nix
     ./displaylink.nix
   ];
 
   networking.hostName = "inix";
+
+  # Declarative Syncthing sync with the NAS. Fill in the NAS device ID below
+  # (get this host's ID with `syncthing --device-id
+  # --home=/home/alexandre/.config/syncthing` and add it on the NAS side).
+  #services.astronix.syncthing = {
+  #  enable = true;
+  #  devices.nas = "PASTE-NAS-DEVICE-ID-HERE";
+  #  folders.documents = {
+  #    path = "/home/alexandre/Sync";
+  #    devices = [ "nas" ];
+  #    type = "sendreceive"; # sendreceive | sendonly | receiveonly | receiveencrypted
+      # To store this folder encrypted-at-rest on the NAS (untrusted device):
+      #   encryptionPasswordFiles.nas = "/etc/astronix/syncthing/nas.key";
+  #  };
+  #};
 
   # SCSI generic (sg) driver — creates /dev/sgN nodes. MakeMKV talks to the
   # optical drive through /dev/sg* (raw MMC/AACS commands), not /dev/sr0, so
