@@ -56,7 +56,7 @@
   security.pki.certificateFiles = [
     ./certs/bundle.crt
   ];
-
+  environment.sessionVariables.SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
   environment.etc."ssl/openssl-legacy.cnf".text = ''
     openssl_conf = default_conf
 
