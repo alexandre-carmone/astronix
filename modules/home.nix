@@ -1,7 +1,11 @@
-{ inputs, ... }:
+{ inputs, theme ? "light", ... }:
 
 # Home-manager wiring (used as a NixOS module) and the per-user home config:
-# Catppuccin Latte theming + Ghostty terminal + Zellij multiplexer.
+# Catppuccin theming (flavor follows the light/dark `theme` arg) + Ghostty
+# terminal + Zellij multiplexer.
+let
+  preset = import ./theme.nix theme;
+in
 {
   home-manager.useUserPackages = true;
   home-manager.useGlobalPkgs = true;
@@ -11,11 +15,13 @@
   home-manager.backupFileExtension = "backup";
 
   home-manager.users.alexandre = { pkgs, inputs, ... }: {
-    imports = [ inputs.catppuccin.homeModules.catppuccin ];
+    imports = [ inputs.catppuccin.homeModules.catppuccin ./darkman.nix ];
     catppuccin.enable = true;
-    catppuccin.flavor = "latte";
+    catppuccin.flavor = preset.flavor;
     catppuccin.accent = "mauve";
-    catppuccin.ghostty.enable = true;
+    # Ghostty is themed natively (below) so it can follow the system color-scheme
+    # live, instead of being pinned to one Catppuccin flavor at build time.
+    catppuccin.ghostty.enable = false;
     catppuccin.gtk.icon.enable = true;
     catppuccin.cursors.enable = true;
     catppuccin.zellij.enable = true;
@@ -24,6 +30,9 @@
     catppuccin.lazygit.enable = true;
     programs.ghostty = {
       enable = true;
+      # Dual theme: Ghostty ships both Catppuccin variants and picks the one
+      # matching the OS light/dark preference, recolouring instantly on switch.
+      settings.theme = "light:catppuccin-latte,dark:catppuccin-mocha";
     };
     programs.zellij = {
       enable = true;

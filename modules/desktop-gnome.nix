@@ -1,8 +1,12 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, theme ? "light", ... }:
 
 # GNOME desktop for the dev workstation: GDM + a trimmed-down GNOME (only the
 # core apps we actually use), blue accent, qwerty-fr keyboard, and a few shell
-# extensions.
+# extensions. The light/dark bits (color-scheme, panel text, wallpaper) come
+# from the shared theme preset so they flip with the `theme` flake arg.
+let
+  preset = import ./theme.nix theme;
+in
 {
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
@@ -52,17 +56,17 @@
           # GNOME's accent enum has no "mauve"; "purple" is the closest match to
           # the Catppuccin mauve accent set in home.nix.
           accent-color = "purple";
-          color-scheme = "prefer-light";
+          color-scheme = preset.colorScheme;
         };
         # Wallpaper. Locked by lockAll, so it's managed here rather than via the
         # GUI. Point these at a real Siril/ImPPG export and rebuild.
         "org/gnome/desktop/background" = {
-          picture-uri = "file:///home/alexandre/Pictures/wallpapers/master_noth_american.png"; # PLACEHOLDER
-          picture-uri-dark = "file:///home/alexandre/Pictures/wallpapers/master_noth_american.png"; # PLACEHOLDER
+          picture-uri = preset.wallpaperLight;
+          picture-uri-dark = preset.wallpaperDark;
           picture-options = "zoom";
         };
         "org/gnome/desktop/screensaver" = {
-          picture-uri = "file:///home/alexandre/Pictures/wallpapers/master_noth_american.png"; # PLACEHOLDER
+          picture-uri = if theme == "dark" then preset.wallpaperDark else preset.wallpaperLight;
         };
         "org/gnome/shell/extensions/tilingshell" = {
           inner-gaps = lib.gvariant.mkUint32 8;
@@ -72,7 +76,7 @@
         # dark whenever a light window is maximized behind the panel. Force the
         # panel text to stay light (Vitals CPU/wifi/etc. readable in all states).
         "org/gnome/shell/extensions/blur-my-shell/panel" = {
-          force-light-text = true;
+          force-light-text = preset.forceLightText;
         };
         "org/gnome/desktop/input-sources" = {
           xkb-options = [ "nocaps:escape" ];

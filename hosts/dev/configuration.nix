@@ -35,6 +35,20 @@
   # reading (bus-encrypted UHD) Blu-rays needs this module loaded.
   boot.kernelModules = [ "sg" ];
 
+  # Let darkman flip the theme unattended: allow alexandre to run exactly the
+  # two theme-switch rebuilds without a password (see modules/darkman.nix).
+  # nixos-rebuild runs switch-to-configuration as root — scope is these two
+  # exact argv only, nothing else gets NOPASSWD.
+  security.sudo.extraRules = [
+    {
+      users = [ "alexandre" ];
+      commands = [
+        { command = "/run/current-system/sw/bin/nixos-rebuild switch --flake /home/alexandre/astronix#dev-dark"; options = [ "NOPASSWD" ]; }
+        { command = "/run/current-system/sw/bin/nixos-rebuild switch --flake /home/alexandre/astronix#dev"; options = [ "NOPASSWD" ]; }
+      ];
+    }
+  ];
+
   # Synaptics fingerprint reader (USB 06cb:00f0) — supported by the open
   # libfprint "synaptics" driver. NixOS wires pam_fprintd into PAM automatically
   # (GDM login, screen unlock, sudo). Enroll with `fprintd-enroll` after rebuild.

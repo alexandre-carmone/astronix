@@ -14,7 +14,21 @@
     catppuccin.url = "github:catppuccin/nix/release-26.05";
   };
 
-  outputs = { self, nixpkgs, home-manager, catppuccin, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, catppuccin, ... }@inputs:
+  let
+    # Builds the dev laptop for a given light/dark theme. The `theme` arg flows
+    # through specialArgs to the theme preset (see modules/theme.nix).
+    mkDev = theme: nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      specialArgs = { inherit inputs theme; };
+      modules = [
+        ./hosts/dev/configuration.nix
+        home-manager.nixosModules.home-manager
+        catppuccin.nixosModules.catppuccin
+      ];
+    };
+  in
+  {
     nixosConfigurations.astronix = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; };
@@ -26,14 +40,10 @@
       ];
     };
 
-    nixosConfigurations.dev = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = { inherit inputs; };
-      modules = [
-        ./hosts/dev/configuration.nix
-        home-manager.nixosModules.home-manager
-        catppuccin.nixosModules.catppuccin
-      ];
-    };
+    # Two prebuilt variants of the dev laptop that differ only by the light/dark
+    # `theme` arg (Catppuccin flavor + GNOME color-scheme + wallpaper). darkman
+    # activates the sibling one at sunrise/sunset via `nixos-rebuild switch`.
+    nixosConfigurations.dev = mkDev "light";
+    nixosConfigurations.dev-dark = mkDev "dark";
   };
 }
