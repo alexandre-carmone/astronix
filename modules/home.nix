@@ -32,7 +32,7 @@ in
       enable = true;
       # Dual theme: Ghostty ships both Catppuccin variants and picks the one
       # matching the OS light/dark preference, recolouring instantly on switch.
-      settings.theme = "light:catppuccin-latte,dark:catppuccin-mocha";
+      settings.theme = "light:Catppuccin Latte,dark:Catppuccin Mocha";
     };
     programs.zellij = {
       enable = true;
