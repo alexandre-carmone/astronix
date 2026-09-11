@@ -10,6 +10,7 @@
     ./input.nix
     ./home.nix
     ./zsh.nix
+    ./keyring.nix
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -50,10 +51,10 @@
     wget
     unzip
     git
+    just
     uv
     cargo
     zellij
-    brave
     lua
     luarocks
     qwerty-fr

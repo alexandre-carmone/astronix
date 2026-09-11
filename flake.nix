@@ -31,7 +31,10 @@
   {
     nixosConfigurations.astronix = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = { inherit inputs; };
+      # The rig has no darkman/dconf light-dark switching, but modules/home.nix
+      # still needs a `theme` to pick a Catppuccin flavor: pin it to the latte
+      # this host has always used.
+      specialArgs = { inherit inputs; theme = "light"; };
       modules = [
         ./hosts/astronix/configuration.nix
         home-manager.nixosModules.home-manager
