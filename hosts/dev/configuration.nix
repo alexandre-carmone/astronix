@@ -9,6 +9,7 @@
     ../../modules/docker.nix
     ../../modules/wine.nix
     ../../modules/autostakkert.nix
+    ../../modules/graxpert.nix
     ../../modules/syncthing.nix
     ./displaylink.nix
   ];
