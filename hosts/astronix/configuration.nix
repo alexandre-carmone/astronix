@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 {
   imports = [
@@ -73,6 +73,20 @@
   # fails to set up its mount namespace and then retries every 5s forever.
   systemd.services.junos-web.unitConfig.RequiresMountsFor =
     "/run/media/alexandre/datas";
+
+  # capturesDir lives on the astrophoto disk, whose tree is owned by alexandre
+  # and whose mount point is 0700. The module runs junos-server under a
+  # DynamicUser by default, which gets a random uid: it cannot traverse
+  # /run/media/alexandre/datas, so canonicalize() on capturesDir fails and every
+  # /api/files/* request answers 500 with an empty Files tab. Running as the
+  # owning user fixes traversal and the write side (thumbnail cache, rename,
+  # delete) in one go. ProtectHome=tmpfs still masks /home, so this does not
+  # hand the service the rest of alexandre's home.
+  systemd.services.junos-web.serviceConfig = {
+    DynamicUser = lib.mkForce false;
+    User  = "alexandre";
+    Group = "users";
+  };
 
   environment.systemPackages = with pkgs; [
     rustup
