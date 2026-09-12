@@ -26,6 +26,27 @@
     };
   };
 
+  # The astrophoto data disk (internal NVMe, ext4, label "datas"). Plasma's
+  # device notifier used to mount this on demand through udisks2, which needs a
+  # polkit password every single boot — and junos-web, whose capturesDir lives
+  # on it, crash-loops until someone types it. Declaring it mounts it at boot
+  # with no prompt.
+  #
+  # The mount point is deliberately left exactly where udisks2 put it rather
+  # than moved somewhere tidier like /mnt: capturesDir below and the absolute
+  # paths inside the KStars/Ekos sequences already on the disk all point at
+  # /run/media/alexandre/datas, and moving it would silently break them. /run is
+  # a tmpfs, but systemd creates the mount point itself on each boot.
+  #
+  # nosuid/nodev match what udisks2 was already using. ext4 carries its own
+  # ownership, so the tree stays alexandre's. nofail means a dead or absent disk
+  # degrades to "junos-web is broken" instead of "the rig will not boot".
+  fileSystems."/run/media/alexandre/datas" = {
+    device = "/dev/disk/by-uuid/27246b7d-d14b-46b1-a3e6-606ef3a1da2a";
+    fsType = "ext4";
+    options = [ "nosuid" "nodev" "nofail" "x-systemd.device-timeout=10s" ];
+  };
+
   services.junos-web = {
     enable = true;
     openFirewall = true;
@@ -46,6 +67,12 @@
     #tls.cert = "/run/secrets/rekos-cert.pem";
     #tls.key  = "/run/secrets/rekos-key.pem";
   };
+
+  # nofail on the data disk above means local-fs.target does not wait for it, so
+  # state the dependency junos-web actually has: without capturesDir present it
+  # fails to set up its mount namespace and then retries every 5s forever.
+  systemd.services.junos-web.unitConfig.RequiresMountsFor =
+    "/run/media/alexandre/datas";
 
   environment.systemPackages = with pkgs; [
     rustup
