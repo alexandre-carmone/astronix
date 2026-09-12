@@ -31,7 +31,7 @@
     openFirewall = true;
 
     capturesDir = "/run/media/alexandre/datas/astrophoto";
-    dsoTileDir = "/run/media/alexandre/datas/dso";
+    dsoTileDir = "/home/alexandre/junos-data/dso";
     httpAddr  = "0.0.0.0:8080";
     httpsAddr = "0.0.0.0:8443";
 
