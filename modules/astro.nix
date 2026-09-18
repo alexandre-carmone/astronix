@@ -5,6 +5,10 @@
 # for remote control of the rig.
 #
 # ImPPG (post-processing/sharpening) lives in its own module, ./imppg.nix.
+# The GSC star catalog, which INDI's CCD Simulator needs to render a star
+# field at all, lives in ./gsc.nix — it is ~235 MB and useful only for
+# simulated sessions, so move that import to hosts/dev if the rig should
+# not carry it.
 let
   # Siril 1.4's Python scripts (the .py from its script repository) run in a
   # venv that Siril builds itself and pip-installs numpy/scipy/PyQt6/sirilpy
@@ -50,7 +54,7 @@ let
   };
 in
 {
-  imports = [ ./imppg.nix ];
+  imports = [ ./imppg.nix ./gsc.nix ];
 
   services.udev.packages = [
     pkgs.indi-full
