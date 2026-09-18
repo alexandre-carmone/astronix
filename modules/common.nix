@@ -42,7 +42,6 @@
   };
 
   programs.firefox.enable = true;
-  services.printing.enable = true;
   services.openssh.enable = true;
 
   environment.systemPackages = with pkgs; [
