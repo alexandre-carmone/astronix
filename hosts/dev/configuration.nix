@@ -106,6 +106,7 @@
     #makemkv # decrypt UHD/bus-encrypted Blu-rays to mkv (libaacs/VLC can't)
     claude-code
     ffmpeg
+    freecad
   ];
 
   # Corporate CA bundle + OpenSSL legacy renegotiation for the corp VPN/proxy.
