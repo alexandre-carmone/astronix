@@ -8,7 +8,6 @@
 #     };
 #     hotspot = {
 #       ssid = "astronix";
-#       passphrase = "astronix-hotspot";
 #     };
 #   };
 #
@@ -17,6 +16,7 @@
 #   HOME_PSK=supersecret
 #   PHONE_SSID=AlexPhone
 #   PHONE_PSK=hotspotpass
+#   HOTSPOT_PSK=astronix-hotspot
 { config, lib, pkgs, ... }:
 
 let
@@ -38,6 +38,9 @@ in
           HOME_PSK=supersecret
           PHONE_SSID=AlexPhone
           PHONE_PSK=hotspotpass
+        The fallback hotspot reads its own passphrase from the same file, under
+        the variable named by `hotspot.passphraseVar` (default HOTSPOT_PSK):
+          HOTSPOT_PSK=astronix-hotspot
         Values never enter the nix store.
       '';
     };
@@ -82,10 +85,15 @@ in
         description = "SSID broadcast by the fallback hotspot.";
       };
 
-      passphrase = lib.mkOption {
+      passphraseVar = lib.mkOption {
         type = lib.types.str;
-        default = "astronix-hotspot";
-        description = "WPA2 passphrase for the fallback hotspot (min 8 chars).";
+        default = "HOTSPOT_PSK";
+        description = ''
+          Name of the variable in `credentialsFile` holding the fallback
+          hotspot's passphrase (min 8 chars). The passphrase itself is never
+          written to the nix store; if the variable is missing from the file the
+          profile ends up with an empty key and the AP will refuse clients.
+        '';
       };
 
       band = lib.mkOption {
@@ -161,7 +169,7 @@ in
         } // lib.optionalAttrs (cfg.hotspot.security != "none") {
           wifi-security = {
             "key-mgmt" = cfg.hotspot.security;
-            psk = cfg.hotspot.passphrase;
+            psk = "$" + cfg.hotspot.passphraseVar;
           };
         };
       };

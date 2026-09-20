@@ -21,7 +21,7 @@
     };
     hotspot = {
       ssid = "astronix";
-      passphrase = "astronix-hotspot";
+      # Passphrase lives in HOTSPOT_PSK inside /etc/astronix/wifi.env, not here.
       security = "wpa-psk";
     };
   };
