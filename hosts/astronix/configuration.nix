@@ -21,26 +21,21 @@
     };
     hotspot = {
       ssid = "astronix";
-      # Passphrase lives in HOTSPOT_PSK inside /etc/astronix/wifi.env, not here.
+      # Passphrase is HOTSPOT_PSK in /etc/astronix/wifi.env, not here.
       security = "wpa-psk";
     };
   };
 
-  # The astrophoto data disk (internal NVMe, ext4, label "datas"). Plasma's
-  # device notifier used to mount this on demand through udisks2, which needs a
-  # polkit password every single boot — and junos-web, whose capturesDir lives
-  # on it, crash-loops until someone types it. Declaring it mounts it at boot
-  # with no prompt.
+  # The astrophoto data disk (internal NVMe, ext4, label "datas"). Declared
+  # here so it mounts at boot. Plasma used to mount it on demand through
+  # udisks2, which asked for a polkit password every boot, and junos-web
+  # crash-looped until someone typed it.
   #
-  # The mount point is deliberately left exactly where udisks2 put it rather
-  # than moved somewhere tidier like /mnt: capturesDir below and the absolute
-  # paths inside the KStars/Ekos sequences already on the disk all point at
-  # /run/media/alexandre/datas, and moving it would silently break them. /run is
-  # a tmpfs, but systemd creates the mount point itself on each boot.
+  # Keep the mount point as it is. capturesDir below and the KStars/Ekos
+  # sequences on the disk all point at /run/media/alexandre/datas.
   #
-  # nosuid/nodev match what udisks2 was already using. ext4 carries its own
-  # ownership, so the tree stays alexandre's. nofail means a dead or absent disk
-  # degrades to "junos-web is broken" instead of "the rig will not boot".
+  # nosuid/nodev are what udisks2 used. nofail means a dead disk breaks
+  # junos-web, not the boot.
   fileSystems."/run/media/alexandre/datas" = {
     device = "/dev/disk/by-uuid/27246b7d-d14b-46b1-a3e6-606ef3a1da2a";
     fsType = "ext4";
@@ -68,20 +63,16 @@
     #tls.key  = "/run/secrets/rekos-key.pem";
   };
 
-  # nofail on the data disk above means local-fs.target does not wait for it, so
-  # state the dependency junos-web actually has: without capturesDir present it
-  # fails to set up its mount namespace and then retries every 5s forever.
+  # nofail means nothing waits for the disk, so declare the dependency
+  # junos-web really has. Without capturesDir it retries every 5s forever.
   systemd.services.junos-web.unitConfig.RequiresMountsFor =
     "/run/media/alexandre/datas";
 
-  # capturesDir lives on the astrophoto disk, whose tree is owned by alexandre
-  # and whose mount point is 0700. The module runs junos-server under a
-  # DynamicUser by default, which gets a random uid: it cannot traverse
-  # /run/media/alexandre/datas, so canonicalize() on capturesDir fails and every
-  # /api/files/* request answers 500 with an empty Files tab. Running as the
-  # owning user fixes traversal and the write side (thumbnail cache, rename,
-  # delete) in one go. ProtectHome=tmpfs still masks /home, so this does not
-  # hand the service the rest of alexandre's home.
+  # Run as alexandre. capturesDir sits on the astrophoto disk, owned by him
+  # behind a 0700 mount point, so the default DynamicUser cannot traverse it:
+  # every /api/files/* request answers 500 and the Files tab stays empty. Being
+  # the owner also fixes the writes (thumbnail cache, rename, delete).
+  # ProtectHome=tmpfs still hides the rest of his home.
   systemd.services.junos-web.serviceConfig = {
     DynamicUser = lib.mkForce false;
     User  = "alexandre";
@@ -94,8 +85,8 @@
   ];
 
   nix.settings = {
-    max-jobs = 1;        # nombre de builds en parallèle (1 = un seul à la fois)
-    cores = 0;            # cores par build (0 = tous les cores disponibles)
+    max-jobs = 1;        # un seul build à la fois
+    cores = 0;           # tous les cores pour ce build
   };
 
   networking.firewall = {
@@ -108,14 +99,11 @@
     IdleAction = "ignore";
   };
 
-  # RustDesk 1.4.9 stopped linking libxdo and now dlopens it at runtime instead
-  # (libxdo-sys-stub tries libxdo.so.4, then .so.3, then .so). Nothing in the
-  # package closure ships it, so on NixOS every one of those lookups fails and
-  # RustDesk quietly disables *all* keyboard and mouse injection. The session
-  # still streams video and syncs the clipboard, so it connects and looks alive
-  # — but nothing you click or type reaches the desktop, which presents as a
-  # frozen screen. 1.4.5 linked libxdo.so.4 directly, which is why this only
-  # showed up with the September nixpkgs bump.
+  # RustDesk 1.4.9 dlopens libxdo instead of linking it, and nothing in its
+  # closure ships the library. Every lookup fails and RustDesk then drops all
+  # keyboard and mouse injection, silently. Video and clipboard still work, so
+  # the session connects and looks frozen. 1.4.5 linked libxdo directly, which
+  # is why this appeared with the September nixpkgs bump.
   systemd.user.services.rustdesk = {
     description = "RustDesk";
     wantedBy = [ "graphical-session.target" ];
@@ -124,8 +112,8 @@
     serviceConfig = {
       Type = "simple";
       ExecStart = "${pkgs.rustdesk-flutter}/bin/rustdesk";
-      # The package's own wrapper prepends /run/opengl-driver/lib and preserves
-      # whatever it inherits, so this only adds libxdo to the search path.
+      # The package's own wrapper keeps what it inherits, so this only adds
+      # libxdo to the search path.
       Environment = [ "LD_LIBRARY_PATH=${pkgs.xdotool}/lib" ];
       Restart = "on-failure";
       RestartSec = 5;

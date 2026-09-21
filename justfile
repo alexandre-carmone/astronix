@@ -1,8 +1,8 @@
 # astronix — task runner for this flake.
-# `just` alone lists every recipe; recipes default to the host you are on.
+# `just` alone lists every recipe. Recipes default to the host you are on.
 
-# Flake attribute for the running machine (hosts/astronix is `astronomix`,
-# hosts/dev is `inix`). Override on any recipe: `just switch astronix`.
+# Flake attribute for the running machine. Override it on any recipe:
+# `just switch astronix`.
 host := if `hostname` == "astronomix" { "astronix" } else { "dev" }
 flake := justfile_directory()
 
@@ -25,12 +25,12 @@ try target=host:
 build target=host:
     nixos-rebuild build --flake {{flake}}#{{target}}
 
-# Build this host and list what packages would change versus the running system.
+# Build this host and list what would change versus the running system.
 diff target=host:
     nixos-rebuild build --flake {{flake}}#{{target}}
     nix store diff-closures /run/current-system ./result
 
-# Evaluate every host without building — the cheap "did I break the Nix?" check.
+# Evaluate every host without building. The cheap "did I break it?" check.
 check:
     nix flake check {{flake}}
 
@@ -42,7 +42,7 @@ update:
 update-input input:
     nix flake update {{input}} --flake {{flake}}
 
-# Switch the dev laptop to the dark variant — what darkman does at dusk.
+# Switch the dev laptop to dark, as darkman does at dusk.
 dark:
     sudo nixos-rebuild switch --flake {{flake}}#dev-dark
 
@@ -58,7 +58,7 @@ generations:
 rollback:
     sudo nixos-rebuild switch --rollback
 
-# Drop generations older than DAYS (default 7) and collect garbage, system + user.
+# Drop generations older than DAYS (default 7), system and user, then collect.
 gc days="7":
     sudo nix-collect-garbage --delete-older-than {{days}}d
     nix-collect-garbage --delete-older-than {{days}}d

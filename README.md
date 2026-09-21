@@ -1,46 +1,56 @@
 # astronix
 
-NixOS flake configuration for two astrophotography machines.
+NixOS flake for two astrophotography machines.
 
 ## Hosts
 
 | Host | hostName | Role |
 | --- | --- | --- |
-| `astronix` | `astronomix` | Headless astrophoto rig — Plasma 6 on X11 with SDDM autologin and xrdp remote access, a fake-EDID virtual display, WiFi hotspot fallback, and the `junos-web` capture web app. |
-| `dev` | `dev` | GNOME workstation — trimmed-down GNOME desktop, DisplayLink dock, corporate CA/VPN bits, and dev tooling. |
+| `astronix` | `astronomix` | The rig. Headless Plasma 6 on X11, SDDM autologin, xrdp, a fake EDID for the virtual display, a WiFi hotspot fallback, and the `junos-web` capture app. |
+| `dev` | `inix` | The workstation. GNOME, DisplayLink dock, corporate CA and VPN bits, dev tooling. |
 
-Both run user `alexandre` and share the astrophotography stack (INDI drivers, KStars, PHD2, Siril).
+Both run user `alexandre` and share the astro stack: INDI, KStars, PHD2, Siril.
 
 ## Layout
 
 ```
-flake.nix              inputs (forked nixpkgs, home-manager, rekos-web, catppuccin) + the two hosts
-justfile               rebuild/update/gc recipes, shared by both hosts
+flake.nix              inputs (nixpkgs fork, home-manager, rekos-web, catppuccin) + the two hosts
+justfile               rebuild/update/gc recipes
 modules/
-  common.nix           base config; imports the per-concern modules below
+  common.nix           base config; imports the modules below
   locale.nix           timezone + locale
   audio.nix            PipeWire
-  input.nix            keyboard: QMK, keyd esc<->caps, qwerty-fr layout
-  home.nix             home-manager wiring + Catppuccin/Ghostty user config
+  input.nix            QMK, keyd esc<->caps, qwerty-fr layout
+  home.nix             home-manager + Catppuccin, Ghostty, Zellij
+  theme.nix            light/dark settings, shared by both layers
+  darkman.nix          rebuilds into the other theme at sunrise/sunset (dev)
+  keyring.nix          keyring opt-out
   zsh.nix              zsh + oh-my-zsh
-  astro.nix            shared astrophotography stack (INDI + apps)
-  desktop-plasma.nix   headless Plasma/xrdp desktop (astronix)
-  desktop-gnome.nix    GNOME desktop (dev)
-  docker.nix           Docker engine + CLI, user in docker group (dev)
-  wifi-hotspot.nix     services.astronix.wifi module (astronix)
+  astro.nix            astro stack (INDI + apps)
+  imppg.nix            ImPPG, built from source
+  gsc.nix              GSC star catalog, for INDI's CCD Simulator
+  graxpert.nix         GraXpert, from the upstream bundle
+  autostakkert.nix     AutoStakkert!4, under Wine (dev)
+  desktop-plasma.nix   headless Plasma + xrdp (astronix)
+  desktop-gnome.nix    GNOME (dev)
+  docker.nix           Docker (dev)
+  wine.nix             Wine + bottles (dev)
+  printing.nix         CUPS + the office printer (dev)
+  syncthing.nix        services.astronix.syncthing (dev)
+  wifi-hotspot.nix     services.astronix.wifi (astronix)
 hosts/
   astronix/            configuration.nix + hardware-configuration.nix
   dev/                 configuration.nix + hardware-configuration.nix + displaylink.nix + certs/
 ```
 
-Each host's `configuration.nix` is a thin composition: it imports `common.nix`, `astro.nix`,
-its desktop module, and any host-specific modules, then adds only what is unique to that machine.
+Each host's `configuration.nix` only composes modules and adds what is unique
+to that machine.
 
 ## Rebuild
 
-`just` is installed on every host (see `modules/common.nix`); run it from this repo.
-Recipes default to the host you are on — `astronomix` maps to `astronix`, anything
-else to `dev` — and take an explicit flake attribute when you want another:
+`just` is installed on every host (see `modules/common.nix`); run it from this
+repo. Recipes default to the host you are on — `astronomix` maps to `astronix`,
+anything else to `dev` — and take a flake attribute for any other:
 
 ```sh
 just              # list every recipe
@@ -52,11 +62,11 @@ just update       # bump every flake input
 just gc 14        # drop generations older than 14 days, then collect garbage
 ```
 
-The underlying command is unchanged if you prefer it raw:
+The raw command still works:
 
 ```sh
-sudo nixos-rebuild switch --flake .#astronix   # on the rig
-sudo nixos-rebuild switch --flake .#dev         # on the workstation
+sudo nixos-rebuild switch --flake .#astronix   # the rig
+sudo nixos-rebuild switch --flake .#dev        # the workstation
 ```
 
-`update` is aliased to `sudo nixos-rebuild switch` in the shell (see `modules/zsh.nix`).
+`update` is also a shell alias for `sudo nixos-rebuild switch` (see `modules/zsh.nix`).

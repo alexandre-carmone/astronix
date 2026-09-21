@@ -1,21 +1,20 @@
 { ... }:
 
-# Home-manager service that flips the whole system between the light and dark
-# variants at sunrise/sunset. Because the Catppuccin TUI themes are baked into
-# the home-manager generation (read-only /nix/store symlinks), the switch is a
-# `nixos-rebuild switch` to the sibling flake output (`#dev` vs `#dev-dark`)
-# rather than a runtime dconf/file tweak.
+# Home-manager service that switches the system between light and dark at
+# sunrise and sunset. The Catppuccin TUI themes are baked into the
+# home-manager generation as read-only store symlinks, so switching means
+# rebuilding into the sibling output (`#dev` or `#dev-dark`), not editing
+# files at runtime.
 #
-# The rebuild needs root: a matching NOPASSWD sudo rule restricted to these two
-# exact commands lives in hosts/dev/configuration.nix. Ghostty additionally
-# follows the color-scheme natively (see home.nix), so the terminal recolours
-# instantly without waiting for the rebuild to finish.
+# That rebuild needs root; hosts/dev/configuration.nix carries a NOPASSWD rule
+# for these two exact commands. Ghostty follows the color-scheme on its own
+# (see home.nix), so the terminal recolours without waiting for the rebuild.
 {
   services.darkman = {
     enable = true;
     settings = {
-      # Sunrise/sunset are computed from these coordinates. Fixed coords avoid
-      # pulling in the geoclue daemon. Adjust to your location (default: Paris).
+      # Sunrise and sunset come from these coordinates (Paris). Fixed coords
+      # keep the geoclue daemon out.
       lat = 48.85;
       lng = 2.35;
       usegeoclue = false;

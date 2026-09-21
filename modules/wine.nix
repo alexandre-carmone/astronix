@@ -1,15 +1,14 @@
 { pkgs, ... }:
 
-# Wine + tooling for running Windows applications on the dev workstation.
-# wineWowPackages.stable provides both 32- and 64-bit Wine; winetricks handles
-# runtime deps/tweaks; bottles is a GUI for managing per-app Wine prefixes.
-# 32-bit OpenGL is required for most graphical Windows apps to render.
+# Wine and friends, for Windows apps on the dev workstation.
+# wineWowPackages.stable is 32- and 64-bit Wine, winetricks installs runtime
+# deps, bottles is a GUI for per-app prefixes. Most graphical apps need 32-bit
+# OpenGL to render.
 {
   hardware.graphics.enable32Bit = true;
 
-  # bottles depends on the python `patool` library, whose test suite fails in
-  # the pinned nixpkgs (the build sandbox lacks the bzip2/xz/lzma helpers the
-  # tests shell out to). The tests are not needed at runtime, so skip them.
+  # bottles needs python `patool`, whose tests fail in our nixpkgs: the build
+  # sandbox has no bzip2/xz/lzma helpers for them to call. Skip the tests.
   nixpkgs.overlays = [
     (final: prev: {
       pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [

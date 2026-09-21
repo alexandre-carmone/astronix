@@ -1,22 +1,18 @@
 { pkgs, lib, ... }:
 
-# Astrophotography stack shared by both hosts: INDI drivers (via udev) and the
-# desktop apps used to capture/process (kstars, phd2, siril, gimp) plus rustdesk
-# for remote control of the rig.
+# Astro stack for both hosts: INDI drivers via udev, the capture and processing
+# apps (kstars, phd2, siril, gimp), and rustdesk to drive the rig remotely.
 #
-# ImPPG (post-processing/sharpening) lives in its own module, ./imppg.nix.
-# The GSC star catalog, which INDI's CCD Simulator needs to render a star
-# field at all, lives in ./gsc.nix — it is ~235 MB and useful only for
-# simulated sessions, so move that import to hosts/dev if the rig should
-# not carry it.
+# ImPPG has its own module, ./imppg.nix. So does the GSC star catalog,
+# ./gsc.nix: INDI's CCD Simulator needs it, but it weighs ~235 MB and only
+# serves simulated sessions, so move that import to hosts/dev to spare the rig.
 let
-  # Siril 1.4's Python scripts (the .py from its script repository) run in a
-  # venv that Siril builds itself and pip-installs numpy/scipy/PyQt6/sirilpy
-  # into. Those manylinux wheels are dynamically linked and, on NixOS, fail to
-  # find libstdc++/libz/Qt/X libs at import time. nix-ld does NOT help here: the
-  # venv's python is a Nix binary, so its dlopen()s resolve via LD_LIBRARY_PATH,
-  # not NIX_LD_LIBRARY_PATH. So we wrap Siril to export this library path to the
-  # python child it spawns.
+  # Siril 1.4 runs its Python scripts in a venv it builds itself, with
+  # numpy/scipy/PyQt6/sirilpy pip-installed into it. Those wheels are
+  # dynamically linked and can't find libstdc++/libz/Qt/X at import time.
+  # nix-ld does not help: the venv's python is a Nix binary, so it reads
+  # LD_LIBRARY_PATH, not NIX_LD_LIBRARY_PATH. Hence the wrapper below, which
+  # hands this path to the python child.
   sirilVenvLibs = with pkgs; [
     stdenv.cc.cc.lib
     zlib
@@ -67,13 +63,13 @@ in
     phd2
     siril
     gimp
-    nomacs # fast image viewer for browsing/comparing captured & stacked frames
+    nomacs # fast viewer for captured and stacked frames
     rustdesk-flutter
     indi-full
     indi-3rdparty.indi-toupbase
     indi-3rdparty.indi-playerone
 
-    # Needed on PATH so Siril can create its Python venv for .py scripts.
+    # On PATH so Siril can build its venv for .py scripts.
     python3
   ];
 

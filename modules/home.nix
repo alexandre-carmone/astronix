@@ -1,8 +1,7 @@
 { inputs, theme ? "light", ... }:
 
-# Home-manager wiring (used as a NixOS module) and the per-user home config:
-# Catppuccin theming (flavor follows the light/dark `theme` arg) + Ghostty
-# terminal + Zellij multiplexer.
+# Home-manager, wired in as a NixOS module, plus the user's home config:
+# Catppuccin theming (the flavor follows `theme`), Ghostty and Zellij.
 let
   preset = import ./theme.nix theme;
 in
@@ -10,8 +9,8 @@ in
   home-manager.useUserPackages = true;
   home-manager.useGlobalPkgs = true;
   home-manager.extraSpecialArgs = { inherit inputs; };
-  # Back up (rather than clobber) any pre-existing dotfiles home-manager wants to
-  # manage, e.g. a zellij config.kdl generated on first run.
+  # Back up the dotfiles home-manager wants to manage instead of clobbering
+  # them, e.g. a zellij config.kdl written on first run.
   home-manager.backupFileExtension = "backup";
 
   home-manager.users.alexandre = { pkgs, inputs, ... }: {
@@ -19,8 +18,8 @@ in
     catppuccin.enable = true;
     catppuccin.flavor = preset.flavor;
     catppuccin.accent = "mauve";
-    # Ghostty is themed natively (below) so it can follow the system color-scheme
-    # live, instead of being pinned to one Catppuccin flavor at build time.
+    # Ghostty themes itself (below) so it follows the system color-scheme
+    # live, instead of being pinned to one flavor at build time.
     catppuccin.ghostty.enable = false;
     catppuccin.gtk.icon.enable = true;
     catppuccin.cursors.enable = true;
@@ -30,17 +29,17 @@ in
     catppuccin.lazygit.enable = true;
     programs.ghostty = {
       enable = true;
-      # Dual theme: Ghostty ships both Catppuccin variants and picks the one
-      # matching the OS light/dark preference, recolouring instantly on switch.
+      # Ghostty ships both variants and picks the one matching the OS
+      # preference, recolouring the moment it changes.
       settings.theme = "light:Catppuccin Latte,dark:Catppuccin Mocha";
     };
     programs.zellij = {
       enable = true;
-      # Move Zellij's "Move" mode off Ctrl+h (clashes with nvim's <C-h> split
-      # navigation) onto Ctrl+m. Layered on top of the compiled-in defaults, so
-      # we only unbind Ctrl+h and add Ctrl+m in the two places the default uses it.
-      # NOTE: Ctrl+m == Enter at the byte level; this only stays distinct because
-      # Ghostty + Zellij both speak the Kitty keyboard protocol.
+      # Move Zellij's "Move" mode from Ctrl+h to Ctrl+m. Ctrl+h clashes with
+      # nvim's split navigation. This sits on top of the defaults, so it only
+      # touches the two places that used Ctrl+h.
+      # Ctrl+m is Enter at the byte level. It stays distinct only because
+      # Ghostty and Zellij both speak the Kitty keyboard protocol.
       extraConfig = ''
         keybinds {
           shared_except "move" "locked" {

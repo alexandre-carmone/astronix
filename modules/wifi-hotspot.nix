@@ -1,4 +1,4 @@
-# Example usage:
+# Example:
 #
 #   services.astronix.wifi = {
 #     enable = true;
@@ -30,16 +30,15 @@ in
       type = lib.types.path;
       default = "/etc/astronix/wifi.env";
       description = ''
-        Path to a root-owned, mode 0600 file defining the credentials for all
-        declared networks. For each entry in `networks`, this file must export
-        `<KEY>_SSID` and `<KEY>_PSK` where <KEY> is the upper-cased network
-        name. Example for networks = { home = {...}; phone = {...}; }:
+        Root-owned 0600 file holding the credentials. Each entry in
+        `networks` needs `<KEY>_SSID` and `<KEY>_PSK`, where <KEY> is its name
+        upper-cased. For networks = { home = {...}; phone = {...}; }:
           HOME_SSID=MyHomeNet
           HOME_PSK=supersecret
           PHONE_SSID=AlexPhone
           PHONE_PSK=hotspotpass
-        The fallback hotspot reads its own passphrase from the same file, under
-        the variable named by `hotspot.passphraseVar` (default HOTSPOT_PSK):
+        The hotspot reads its passphrase from the same file, under the
+        variable named by `hotspot.passphraseVar`:
           HOTSPOT_PSK=astronix-hotspot
         Values never enter the nix store.
       '';
@@ -48,9 +47,9 @@ in
     networks = lib.mkOption {
       default = { home = { priority = 20; }; };
       description = ''
-        Set of preconfigured wifi networks to try, by attribute name. The name
-        is also used to derive the env-var prefix in `credentialsFile`
-        (upper-cased). Higher priority is preferred when multiple are in range.
+        Wifi networks to try, by name. The name, upper-cased, is also the
+        env-var prefix in `credentialsFile`. When several are in range, the
+        higher priority wins.
       '';
       type = lib.types.attrsOf (lib.types.submodule {
         options = {
@@ -68,10 +67,10 @@ in
             type = lib.types.enum [ "wpa-psk" "sae" "none" ];
             default = "wpa-psk";
             description = ''
-              Wifi security protocol:
-              - "wpa-psk": WPA/WPA2 Personal (most home networks).
-              - "sae":     WPA3 Personal. Use for pure-WPA3 APs.
-              - "none":    open network, no passphrase (PSK env var ignored).
+              Wifi security:
+              - "wpa-psk": WPA/WPA2 Personal, most home networks.
+              - "sae":     WPA3 Personal, for pure-WPA3 APs.
+              - "none":    open network, PSK env var ignored.
             '';
           };
         };
@@ -89,27 +88,26 @@ in
         type = lib.types.str;
         default = "HOTSPOT_PSK";
         description = ''
-          Name of the variable in `credentialsFile` holding the fallback
-          hotspot's passphrase (min 8 chars). The passphrase itself is never
-          written to the nix store; if the variable is missing from the file the
-          profile ends up with an empty key and the AP will refuse clients.
+          Variable in `credentialsFile` holding the hotspot passphrase, 8
+          characters minimum. It never enters the nix store. If the variable is
+          missing the key ends up empty and the AP refuses every client.
         '';
       };
 
       band = lib.mkOption {
         type = lib.types.enum [ "bg" "a" ];
         default = "bg";
-        description = "Wifi band: bg (2.4 GHz, best range/compat) or a (5 GHz).";
+        description = "Band: bg (2.4 GHz, best range) or a (5 GHz).";
       };
 
       security = lib.mkOption {
         type = lib.types.enum [ "wpa-psk" "sae" "none" ];
         default = "wpa-psk";
         description = ''
-          Hotspot security protocol:
-          - "wpa-psk": WPA2 Personal (broadest client compatibility).
-          - "sae":     WPA3 Personal. Some older clients can't join.
-          - "none":    open AP, no passphrase (passphrase ignored).
+          Hotspot security:
+          - "wpa-psk": WPA2 Personal, the widest client support.
+          - "sae":     WPA3 Personal, older clients can't join.
+          - "none":    open AP, passphrase ignored.
         '';
       };
     };
@@ -119,10 +117,9 @@ in
     networking.networkmanager.enable = true;
     networking.networkmanager.wifi.powersave = false;
 
-    # Allow hotspot clients to obtain a DHCP lease (UDP 67) and resolve
-    # DNS (53) via the dnsmasq instance NetworkManager runs for the
-    # `ipv4.method = "shared"` profile. Without these the AP is visible
-    # but clients associate and never get an IP.
+    # Lets hotspot clients get a DHCP lease (UDP 67) and resolve DNS (53)
+    # from the dnsmasq NetworkManager runs for the shared profile. Without
+    # them the AP is visible, clients associate, and no one gets an IP.
     networking.firewall.allowedUDPPorts = [ 53 67 ];
     networking.firewall.allowedTCPPorts = [ 53 ];
 

@@ -1,15 +1,13 @@
 { pkgs, ... }:
 
-# GraXpert — background extraction (gradient removal) and AI denoising for
-# astronomical images, by Steffen Hirtle. Not in nixpkgs. Upstream ships only a
-# pre-built cx_Freeze bundle (a frozen CPython 3.10 plus every dependency as a
-# bundled .so), which cannot run as-is on NixOS: the executable and the bundled
-# libraries look for libX11/libGL/libstdc++ in FHS paths that don't exist here.
-# autoPatchelfHook rewrites their interpreter and RPATHs to point at nixpkgs, so
-# no FHS env, steam-run or LD_LIBRARY_PATH wrapper is needed.
+# GraXpert — gradient removal and AI denoising for astronomical images, by
+# Steffen Hirtle. Not in nixpkgs. Upstream ships only a cx_Freeze bundle: a
+# frozen CPython 3.10 with every dependency as a bundled .so, all looking for
+# libX11/libGL/libstdc++ in FHS paths NixOS doesn't have. autoPatchelfHook
+# rewrites their interpreter and RPATHs, so no FHS env or steam-run is needed.
 #
-# The AI models are not in the bundle: GraXpert downloads them on first use into
-# ~/.local/share/GraXpert, and preferences live in ~/.config/GraXpert.
+# The AI models are not in the bundle. GraXpert downloads them on first use to
+# ~/.local/share/GraXpert; preferences live in ~/.config/GraXpert.
 let
   graxpert = pkgs.stdenv.mkDerivation (finalAttrs: {
     pname = "graxpert";
@@ -42,11 +40,10 @@ let
       libice
     ];
 
-    # The bundled onnxruntime also ships CUDA and TensorRT execution providers,
-    # but not the CUDA/cuDNN/TensorRT libraries they need, so they can never load
-    # (inference runs on CPU and onnxruntime logs one "Init provider bridge
-    # failed" line at startup). Let autopatchelf leave those unresolved instead
-    # of dragging the whole CUDA closure in for dead code.
+    # The bundled onnxruntime ships CUDA and TensorRT providers but not the
+    # libraries they need, so they never load: inference runs on CPU and logs
+    # one "Init provider bridge failed" line. Leave them unresolved rather than
+    # drag the whole CUDA closure in for dead code.
     autoPatchelfIgnoreMissingDeps = [
       "libcuda.so.1"
       "libcudart.so*"
@@ -70,10 +67,9 @@ let
       install -Dm644 frozen_application_license.txt \
         "$out/share/licenses/graxpert/frozen_application_license.txt"
 
-      # customtkinter copies its bundled fonts into ~/.fonts on every start. The
-      # copies inherit the read-only permissions of the nix store, so from the
-      # second start on the copy fails with EACCES and the UI falls back to
-      # "circle_shapes" drawing ("The rendering quality will be bad!"). Give the
+      # customtkinter copies its fonts to ~/.fonts on every start. The copies
+      # inherit the store's read-only bits, so the second start fails with
+      # EACCES and the UI falls back to "circle_shapes" drawing. Give the
       # copies write permission back before launching.
       mkdir -p "$out/libexec"
       cat > "$out/libexec/graxpert-fix-fonts" <<'EOF'
@@ -93,8 +89,8 @@ let
       makeWrapper "$out/opt/graxpert/GraXpert" "$out/bin/graxpert" \
         --run "$out/libexec/graxpert-fix-fonts"
 
-      # Icon.ico is an ICO container wrapping a single 256x256 PNG frame; unwrap
-      # it so desktop environments that don't read .ico still show the icon.
+      # Icon.ico wraps a single 256x256 PNG. Unwrap it for desktops that don't
+      # read .ico.
       iconOffset=$(od -An -tu4 -j 18 -N 4 Icon.ico | tr -d ' ')
       dd if=Icon.ico of=graxpert.png bs=1 skip="$iconOffset" status=none
       install -Dm644 graxpert.png \

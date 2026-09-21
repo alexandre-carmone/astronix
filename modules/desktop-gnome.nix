@@ -1,9 +1,8 @@
 { lib, pkgs, theme ? "light", ... }:
 
-# GNOME desktop for the dev workstation: GDM + a trimmed-down GNOME (only the
-# core apps we actually use), blue accent, qwerty-fr keyboard, and a few shell
-# extensions. The light/dark bits (color-scheme, panel text, wallpaper) come
-# from the shared theme preset so they flip with the `theme` flake arg.
+# GNOME for the dev workstation: GDM, a trimmed-down GNOME, purple accent,
+# qwerty-fr keyboard and a few shell extensions. The light/dark bits come from
+# the shared theme preset, so they follow the `theme` flake arg.
 let
   preset = import ./theme.nix theme;
 in
@@ -11,14 +10,12 @@ in
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
-  # To disable installing GNOME's suite of applications
-  # and only be left with GNOME shell.
+  # Keep the core apps; drop the developer tools and the games.
   services.gnome.core-apps.enable = true;
   services.gnome.core-developer-tools.enable = false;
   services.gnome.games.enable = false;
-  # Disable GNOME core apps we don't use, keeping only:
-  # Files (nautilus), Disk Usage Analyzer (baobab), Settings (gnome-control-center),
-  # and Disks (gnome-disk-utility, enabled separately via programs.gnome-disks).
+  # Drop the core apps we don't use. What's left: Files, Disk Usage Analyzer,
+  # Settings, and Disks (enabled separately via programs.gnome-disks).
   environment.gnome.excludePackages = with pkgs; [
     gnome-tour
     gnome-user-docs
@@ -50,16 +47,15 @@ in
 
   programs.dconf.profiles.user.databases = [
     {
-      lockAll = true; # prevents overriding
+      lockAll = true; # the GUI can't override these
       settings = {
         "org/gnome/desktop/interface" = {
-          # GNOME's accent enum has no "mauve"; "purple" is the closest match to
-          # the Catppuccin mauve accent set in home.nix.
+          # GNOME has no "mauve" accent; "purple" is the closest to the
+          # Catppuccin one set in home.nix.
           accent-color = "purple";
           color-scheme = preset.colorScheme;
         };
-        # Wallpaper. Locked by lockAll, so it's managed here rather than via the
-        # GUI. Point these at a real Siril/ImPPG export and rebuild.
+        # Wallpaper. lockAll means the GUI can't change it, so set it here.
         "org/gnome/desktop/background" = {
           picture-uri = preset.wallpaperLight;
           picture-uri-dark = preset.wallpaperDark;
@@ -72,9 +68,9 @@ in
           inner-gaps = lib.gvariant.mkUint32 8;
           outer-gaps = lib.gvariant.mkUint32 8;
         };
-        # With the light color-scheme, blur-my-shell flips the top-bar text to
-        # dark whenever a light window is maximized behind the panel. Force the
-        # panel text to stay light (Vitals CPU/wifi/etc. readable in all states).
+        # Under the light scheme, blur-my-shell turns the top-bar text dark
+        # whenever a light window is maximized behind the panel. Keep it light
+        # so Vitals stays readable.
         "org/gnome/shell/extensions/blur-my-shell/panel" = {
           force-light-text = preset.forceLightText;
         };

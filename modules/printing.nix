@@ -1,17 +1,16 @@
-# Printing: CUPS + the office printer, declared the upstream way
-# (https://wiki.nixos.org/wiki/Printing). Imported only by hosts/dev (inix),
-# the only host with a printer.
+# Printing : CUPS et l'imprimante du bureau. Importe seulement par hosts/dev,
+# le seul hote qui en a une. Voir https://wiki.nixos.org/wiki/Printing
 #
-# Kyocera TASKalfa 3554ci, d'apres une sonde ipptool du 2026-09-17 :
-#   * port 631 ferme, 443 ouvert -> IPPS sur 443 (cas Kyocera classique)
-#   * aucune auth IPP exigee (Validate-Job repond successful-ok sans creds)
-#   * printer-device-id CMD:PCLXL,PostScript Emulation,PCL5C,PJL : la machine
-#     ne lit NI PDF NI PWG-Raster, bien que sa reponse IPP les annonce (couche
-#     AirPrint du firmware). D'ou le PPD PostScript generique plutot que
-#     `model = "everywhere"`, qui ferait sortir des dizaines de pages de
-#     charabia. generic.ppd gere la couleur et le duplex ; ce qu'on perd, ce
-#     sont les options du modele (bacs, finisher, agrafage), qui demanderaient
-#     d'empaqueter le PPD Kyocera officiel, absent de nixpkgs.
+# Kyocera TASKalfa 3554ci, sonde ipptool du 2026-09-17 :
+#   * port 631 ferme, 443 ouvert -> IPPS sur 443
+#   * aucune auth IPP exigee
+#   * la machine ne lit ni PDF ni PWG-Raster, malgre ce qu'annonce sa reponse
+#     IPP (couche AirPrint du firmware)
+#
+# D'ou le PPD PostScript generique : `model = "everywhere"` sortirait des pages
+# de charabia. generic.ppd gere la couleur et le duplex. On perd les options du
+# modele (bacs, finisher, agrafage), qui demanderaient le PPD Kyocera officiel,
+# absent de nixpkgs.
 { pkgs, ... }:
 
 {
@@ -51,7 +50,7 @@
   environment.systemPackages = [ pkgs.system-config-printer ];
 
   # lpadmin doit joindre l'imprimante : hors du bureau l'unite echoue a chaque
-  # boot. On retente quelques fois, le temps que le Wi-Fi/VPN monte.
+  # boot. On retente quelques fois, le temps que le Wi-Fi ou le VPN monte.
   systemd.services.ensure-printers = {
     startLimitIntervalSec = 600;
     startLimitBurst = 5;

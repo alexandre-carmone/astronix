@@ -1,7 +1,7 @@
 { lib, pkgs, ... }:
 
-# Keyboard/input concerns: QMK support, esc<->capslock swap, raw HID access for
-# live keyboard configuration, and the qwerty-fr xkb layout.
+# Keyboard: QMK, esc<->capslock swap, raw HID for live configuration, and the
+# qwerty-fr layout.
 {
   hardware.keyboard.qmk.enable = true;
 
@@ -22,8 +22,7 @@
   };
 
   services.xserver.xkb = {
-    # mkDefault so a host can override the session layout (the headless Plasma
-    # host pins plain "us" in modules/desktop-plasma.nix).
+    # mkDefault so a host can override it; desktop-plasma.nix pins plain "us".
     layout = lib.mkDefault "us_qwerty-fr";
     extraLayouts = {
       us_qwerty-fr = {

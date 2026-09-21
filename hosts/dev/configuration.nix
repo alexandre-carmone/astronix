@@ -17,9 +17,9 @@
 
   networking.hostName = "inix";
 
-  # Declarative Syncthing sync with the NAS. Fill in the NAS device ID below
-  # (get this host's ID with `syncthing --device-id
-  # --home=/home/alexandre/.config/syncthing` and add it on the NAS side).
+  # Syncthing sync with the NAS. Paste the NAS device ID below; get this
+  # host's own with `syncthing --device-id --home=~/.config/syncthing` and add
+  # it on the NAS side.
   #services.astronix.syncthing = {
   #  enable = true;
   #  devices.nas = "PASTE-NAS-DEVICE-ID-HERE";
@@ -27,20 +27,18 @@
   #    path = "/home/alexandre/Sync";
   #    devices = [ "nas" ];
   #    type = "sendreceive"; # sendreceive | sendonly | receiveonly | receiveencrypted
-      # To store this folder encrypted-at-rest on the NAS (untrusted device):
+      # To store this folder encrypted on the NAS:
       #   encryptionPasswordFiles.nas = "/etc/astronix/syncthing/nas.key";
   #  };
   #};
 
-  # SCSI generic (sg) driver — creates /dev/sgN nodes. MakeMKV talks to the
-  # optical drive through /dev/sg* (raw MMC/AACS commands), not /dev/sr0, so
-  # reading (bus-encrypted UHD) Blu-rays needs this module loaded.
+  # SCSI generic driver, for the /dev/sgN nodes. MakeMKV drives the optical
+  # drive through /dev/sg*, not /dev/sr0. Needed to read UHD Blu-rays.
   boot.kernelModules = [ "sg" ];
 
-  # Let darkman flip the theme unattended: allow alexandre to run exactly the
-  # two theme-switch rebuilds without a password (see modules/darkman.nix).
-  # nixos-rebuild runs switch-to-configuration as root — scope is these two
-  # exact argv only, nothing else gets NOPASSWD.
+  # darkman switches the theme by rebuilding, which needs root (see
+  # modules/darkman.nix). These two exact commands run without a password.
+  # Nothing else does.
   security.sudo.extraRules = [
     {
       users = [ "alexandre" ];
@@ -51,9 +49,9 @@
     }
   ];
 
-  # Synaptics fingerprint reader (USB 06cb:00f0) — supported by the open
-  # libfprint "synaptics" driver. NixOS wires pam_fprintd into PAM automatically
-  # (GDM login, screen unlock, sudo). Enroll with `fprintd-enroll` after rebuild.
+  # Synaptics fingerprint reader (USB 06cb:00f0), driven by libfprint. NixOS
+  # wires it into GDM login, screen unlock and sudo. Enroll with
+  # `fprintd-enroll` after the rebuild.
   services.fprintd.enable = true;
 
   environment.systemPackages = with pkgs; [
@@ -63,14 +61,14 @@
     teams-for-linux
     signal-desktop
     vlc
-    #makemkv # decrypt UHD/bus-encrypted Blu-rays to mkv (libaacs/VLC can't)
+    #makemkv # rips UHD Blu-rays to mkv (libaacs/VLC can't)
     claude-code
     ffmpeg
     freecad
     orca-slicer
   ];
 
-  # Corporate CA bundle + OpenSSL legacy renegotiation for the corp VPN/proxy.
+  # Corporate CA bundle and legacy renegotiation, for the corp VPN/proxy.
   security.pki.certificateFiles = [
     ./certs/bundle.crt
   ];

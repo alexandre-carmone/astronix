@@ -1,26 +1,26 @@
-# Declarative Syncthing sync (e.g. laptop <-> NAS).
+# Declarative Syncthing sync, e.g. laptop <-> NAS.
 #
-# The Nix config is the single source of truth: devices and folders declared
-# here are pushed to Syncthing and GUI-side changes are overridden. Just drop in
-# device IDs and folder rules, rebuild, and it syncs automatically.
+# This config is the source of truth: devices and folders declared here are
+# pushed to Syncthing and override anything set in the GUI. Add device IDs and
+# folder rules, rebuild, and it syncs.
 #
-# Per folder you control BOTH the sync direction (`type`) and whether the data
-# is encrypted at rest on a remote (per-device `encryptionPasswordFiles`).
+# Each folder sets its own direction (`type`) and, per remote, whether the data
+# is encrypted at rest there (`encryptionPasswordFiles`).
 #
-# Example usage (in a host's configuration.nix):
+# Example (in a host's configuration.nix):
 #
 #   services.astronix.syncthing = {
 #     enable = true;
 #     devices.nas = "AAAAAAA-BBBBBBB-CCCCCCC-DDDDDDD-EEEEEEE-FFFFFFF-GGGGGGG-HHHHHHH";
 #
-#     # Pure two-way sync, plaintext both ends:
+#     # Two-way sync, plaintext at both ends:
 #     folders.documents = {
 #       path = "/home/alexandre/Sync";
 #       devices = [ "nas" ];
 #       type = "sendreceive";
 #     };
 #
-#     # Upload-only backup, encrypted at rest on the NAS (NAS can't read it):
+#     # Upload-only backup, unreadable on the NAS:
 #     folders.backup = {
 #       path = "/home/alexandre/Backup";
 #       devices = [ "nas" ];
@@ -29,9 +29,9 @@
 #     };
 #   };
 #
-# One-time pairing: after the first rebuild, this host generates its own device
-# ID (from a TLS cert). Add that ID on the NAS and share the same folder back;
-# put the NAS's device ID in `devices.nas`. Get this host's ID with:
+# Pairing, once: the first rebuild gives this host a device ID. Add it on the
+# NAS, share the same folder back, and put the NAS's ID in `devices.nas`. Read
+# this host's with:
 #   syncthing --device-id --home=/home/alexandre/.config/syncthing
 { config, lib, ... }:
 
@@ -52,8 +52,8 @@ in
       type = lib.types.str;
       default = "/home/alexandre";
       description = ''
-        Base directory for Syncthing state and config. Relative folder paths
-        resolve under it; the config lives in `<dataDir>/.config/syncthing`.
+        Base directory for Syncthing state. Relative folder paths resolve
+        under it; the config lives in `<dataDir>/.config/syncthing`.
       '';
     };
 
@@ -62,17 +62,16 @@ in
       default = { };
       example = { nas = "AAAAAAA-BBBBBBB-CCCCCCC-DDDDDDD-EEEEEEE-FFFFFFF-GGGGGGG-HHHHHHH"; };
       description = ''
-        Remote devices to sync with, as friendly name -> Syncthing device ID.
-        Folder `devices` lists reference these names. Device IDs are public and
-        safe to commit.
+        Remote devices, as name -> Syncthing device ID. Folder `devices` lists
+        use these names. Device IDs are public, so committing them is fine.
       '';
     };
 
     folders = lib.mkOption {
       default = { };
       description = ''
-        Folders to sync, keyed by Syncthing folder id/label. Each folder's
-        `devices` list references keys of `devices`.
+        Folders to sync, keyed by Syncthing folder id. Each folder's `devices`
+        list holds keys of `devices`.
       '';
       type = lib.types.attrsOf (lib.types.submodule {
         options = {
@@ -96,14 +95,13 @@ in
             ];
             default = "sendreceive";
             description = ''
-              Sync direction / role for this folder on THIS host:
-              - "sendreceive":      pure two-way sync (push local + pull remote).
-              - "sendonly":         upload only (push local changes, ignore remote).
-              - "receiveonly":      download only (accept remote changes, never push local).
-              - "receiveencrypted": store an encrypted-at-rest copy for an untrusted
-                                    peer (this host can't read the data; the trusted
-                                    peer supplies the password). Use this when THIS
-                                    host is the dumb storage target.
+              What this folder does on THIS host:
+              - "sendreceive":      two-way sync.
+              - "sendonly":         upload only, ignore remote changes.
+              - "receiveonly":      download only, never push local changes.
+              - "receiveencrypted": hold an encrypted copy for a peer that keeps
+                                    the password. This host can't read it. Use
+                                    it when this host is the storage target.
               See https://docs.syncthing.net/users/config.html#config-option-folder.type
             '';
           };
@@ -113,13 +111,12 @@ in
             default = { };
             example = { nas = "/etc/astronix/syncthing/nas.key"; };
             description = ''
-              Optional per-remote-device encryption. Maps a device name (a key of
-              `devices`) to a path holding the encryption password. When set, that
-              remote stores this folder ENCRYPTED at rest and cannot read the
-              contents (untrusted device); the remote must set the folder type to
-              "receiveencrypted" with the same password. The file is read at
-              service activation and never enters the nix store, so keep it as a
-              root-owned 0600 file under e.g. /etc/astronix/syncthing/.
+              Per-remote encryption. Maps a device name (a key of `devices`)
+              to a file holding the password. That remote then stores this
+              folder encrypted and cannot read it; it must set the folder type
+              to "receiveencrypted" with the same password. The file is read at
+              activation and never enters the nix store, so keep it root-owned
+              and 0600 under e.g. /etc/astronix/syncthing/.
             '';
           };
         };
@@ -135,7 +132,7 @@ in
       dataDir = cfg.dataDir;
       configDir = "${cfg.dataDir}/.config/syncthing";
       openDefaultPorts = true; # TCP/UDP 22000 sync + UDP 21027 local discovery
-      overrideDevices = true; # Nix config is authoritative (fully declarative)
+      overrideDevices = true; # this config wins over the GUI
       overrideFolders = true;
       guiAddress = "127.0.0.1:8384"; # localhost only
       settings = {

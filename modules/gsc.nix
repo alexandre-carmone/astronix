@@ -1,34 +1,29 @@
 { pkgs, ... }:
 
-# GSC — the HST Guide Star Catalog, both the `gsc` query tool and the ~9,500
-# region files it reads. Not in nixpkgs; elsewhere it arrives as the `gsc` and
-# `gsc-data` packages from the INDI PPA, which is why the CCD Simulator has
-# stars out of the box on Ubuntu and none here.
+# GSC — the HST Guide Star Catalog: the `gsc` query tool and the ~9,500 region
+# files it reads. Not in nixpkgs. Elsewhere it comes from the INDI PPA, which
+# is why the CCD Simulator shows stars on Ubuntu and none here.
 #
-# This module exists purely for INDI's CCD Simulator. indi_simulator_ccd draws
-# its fake star field by shelling out to the catalog (ccd_simulator.cpp):
+# This module exists only for that simulator. indi_simulator_ccd draws its fake
+# star field by shelling out to the catalog:
 #
 #   popen("gsc -c <ra> <dec> -r <radius> -m 0 <mag> -n 3000")
 #
-# With no `gsc` on PATH that popen() still *succeeds* — /bin/sh starts fine and
-# exits 127 — so the driver parses zero stars and logs the misleading
+# With no `gsc` on PATH that popen() still succeeds (sh exits 127), so the
+# driver reads zero stars and logs "No stars found in field" instead of "Error
+# launching gsc". Frames then carry sky glow and noise but not one star, and
+# Ekos' align, guide and focus have nothing to work with.
 #
-#   "No stars found in field -- check gsc catalog coverage for this region."
+# gsc finds the catalog through $GSCDAT, else an argv[0] heuristic that only
+# fires for /usr/bin/gsc, else /usr/share/GSC. None exist here, so we wrap the
+# binary and point GSCDAT at its own store path. $GSCBIN stays unset: gsc
+# derives it as $GSCDAT/bin, which is where CMake drops regions.bin. A wrapper
+# beats environment.variables because the lookup happens wherever indiserver
+# was started, possibly on another machine, while the wrapper follows the
+# binary on PATH.
 #
-# instead of its "Error launching gsc" branch. Frames then hold sky glow and
-# noise but not one star, and Ekos' align/guide/focus have nothing to chew on.
-#
-# gsc.c finds the catalog through $GSCDAT, falling back to an argv[0] heuristic
-# that only fires for a literal /usr/bin/gsc, then to a hard-coded
-# /usr/share/GSC — none of which exist here. So we wrap the binary to point
-# GSCDAT at its own store path. $GSCBIN is deliberately left unset: gsc derives
-# it as $GSCDAT/bin, which is exactly where CMake drops regions.bin/regions.ind.
-# Wrapping beats a global environment.variables entry because the lookup happens
-# in whatever environment indiserver was started with — possibly a remote one —
-# whereas the wrapper travels with the binary on PATH.
-#
-# Upstream keeps the catalog in the source tree, so both src and the installed
-# output weigh ~235 MB. That is the whole cost of this module.
+# The catalog ships inside the source tree, so src and output both weigh
+# ~235 MB. That is the whole cost of this module.
 let
   gsc = pkgs.stdenv.mkDerivation {
     pname = "gsc";
@@ -43,9 +38,9 @@ let
     nativeBuildInputs = with pkgs; [ cmake makeWrapper ];
 
     # 1990s C: K&R definitions, implicit declarations, `void main`. GCC 15
-    # defaults to -std=gnu23, which made the first two hard errors, so pin the
-    # dialect the code was written for rather than deafen the diagnostics
-    # one -Wno- flag at a time.
+    # defaults to -std=gnu23 and turns the first two into hard errors, so pin
+    # the dialect the code was written for instead of silencing warnings one
+    # flag at a time.
     env.NIX_CFLAGS_COMPILE = "-std=gnu89";
 
     postInstall = ''

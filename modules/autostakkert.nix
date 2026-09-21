@@ -1,11 +1,10 @@
 { pkgs, ... }:
 
-# AutoStakkert!4 — proprietary Windows "lucky imaging" stacking software for
-# planetary/lunar/solar astrophotography (freeware, by Emil Kraaikamp). It ships
-# as a portable zip (a single .exe plus FreeImage.dll), so we fetch it and run
-# it under Wine in an isolated prefix. The program files are copied into the
-# (writable) prefix on each launch because AutoStakkert writes settings next to
-# its exe and the nix store is read-only.
+# AutoStakkert!4 — Windows "lucky imaging" stacker for planetary, lunar and
+# solar work (freeware, by Emil Kraaikamp). It ships as a portable zip, so we
+# fetch it and run it under Wine in its own prefix. AutoStakkert writes its
+# settings next to its exe, so each launch copies the program files from the
+# read-only store into the writable prefix.
 let
   autostakkert = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
     pname = "autostakkert";
@@ -45,7 +44,7 @@ let
       export WINEDLLOVERRIDES="mscoree=;mshtml="
       appdir="$WINEPREFIX/drive_c/AutoStakkert"
       mkdir -p "$appdir"
-      # Refresh program files from the (read-only) store into the writable prefix.
+      # Refresh the program files from the store into the prefix.
       cp -f "@sharedir@"/* "$appdir/" 2>/dev/null || true
       chmod -R u+w "$appdir"
       exec wine "$appdir/AutoStakkert.exe" "$@"
@@ -56,7 +55,7 @@ let
       wrapProgram "$out/bin/autostakkert" \
         --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.wineWowPackages.stable ]}
 
-      # Best-effort icon extraction from the PE resources for the app menu entry.
+      # Icon for the menu entry, pulled from the PE resources. Best effort.
       mkdir -p "$out/share/pixmaps"
       ( cd "$TMPDIR" \
         && wrestool -x -t 14 "$out/share/autostakkert/AutoStakkert.exe" > as.ico 2>/dev/null \

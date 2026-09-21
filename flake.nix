@@ -16,8 +16,8 @@
 
   outputs = { self, nixpkgs, home-manager, catppuccin, ... }@inputs:
   let
-    # Builds the dev laptop for a given light/dark theme. The `theme` arg flows
-    # through specialArgs to the theme preset (see modules/theme.nix).
+    # Builds the dev laptop for one theme. `theme` reaches the preset in
+    # modules/theme.nix through specialArgs.
     mkDev = theme: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs theme; };
@@ -31,9 +31,8 @@
   {
     nixosConfigurations.astronix = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      # The rig has no darkman/dconf light-dark switching, but modules/home.nix
-      # still needs a `theme` to pick a Catppuccin flavor: pin it to the latte
-      # this host has always used.
+      # The rig has no light/dark switching, but modules/home.nix still needs a
+      # theme to pick a Catppuccin flavor. Pin it to latte.
       specialArgs = { inherit inputs; theme = "light"; };
       modules = [
         ./hosts/astronix/configuration.nix
@@ -43,9 +42,8 @@
       ];
     };
 
-    # Two prebuilt variants of the dev laptop that differ only by the light/dark
-    # `theme` arg (Catppuccin flavor + GNOME color-scheme + wallpaper). darkman
-    # activates the sibling one at sunrise/sunset via `nixos-rebuild switch`.
+    # The same laptop in light and dark: Catppuccin flavor, GNOME color-scheme
+    # and wallpaper. darkman rebuilds into the other at sunrise/sunset.
     nixosConfigurations.dev = mkDev "light";
     nixosConfigurations.dev-dark = mkDev "dark";
   };
