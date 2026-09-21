@@ -17,46 +17,6 @@
 
   networking.hostName = "inix";
 
-  # Kyocera TASKalfa 3554ci du bureau.
-  #
-  # Sonde du 2026-09-17 depuis le reseau du travail (ipptool) :
-  #   * port 631 ferme, 443 ouvert -> IPPS sur 443, cas Kyocera classique
-  #   * uri-authentication-supported = none, et Validate-Job repond
-  #     successful-ok sans identifiants -> aucune auth IPP exigee
-  #   * document-format-default = application/octet-stream : la machine devine
-  #     le langage d'apres les octets recus
-  #   * printer-device-id CMD:PCLXL,PostScript Emulation,PCL5C,PJL -> les seuls
-  #     langages reellement interpretes. NI PDF NI PWG-Raster, bien que la
-  #     reponse IPP annonce application/pdf et image/pwg-raster (couche
-  #     AirPrint du firmware).
-  #
-  # D'ou le choix du PPD PostScript generique plutot que du driverless : avec
-  # `everywhere` / "Generic IPP Everywhere Printer", CUPS envoie du PWG-Raster
-  # ou du PDF que le moteur ne sait pas lire, et la machine le vide en texte
-  # brut -- des dizaines de pages de charabia. En PostScript, CUPS convertit via
-  # pdftops et la machine reconnait le flux immediatement.
-  #
-  # generic.ppd est ColorDevice:True et gere le duplex, donc rien n'est perdu
-  # cote couleur. Ce qu'on perd, ce sont les options specifiques au modele
-  # (bacs, finisher, agrafage) : il faudrait pour cela empaqueter le PPD
-  # Kyocera officiel, absent de nixpkgs (cups-kyocera* ne couvre que les
-  # FS-10xx et ECOSYS M55xx/P50xx).
-  services.astronix.printing.printers.travail = {
-    address = "10.0.28.200";
-    port = 443;
-    resource = "/ipp/print";
-    description = "Kyocera TASKalfa 3554ci";
-    location = "Bureau";
-    auth = "none";
-    default = true;
-    model = "drv:///sample.drv/generic.ppd"; # Generic PostScript Printer
-    options = {
-      # Noms d'options PPD (et non les mots-cles IPP `sides`/`media`).
-      PageSize = "A4";
-      Duplex = "DuplexNoTumble"; # recto-verso bord long
-    };
-  };
-
   # Declarative Syncthing sync with the NAS. Fill in the NAS device ID below
   # (get this host's ID with `syncthing --device-id
   # --home=/home/alexandre/.config/syncthing` and add it on the NAS side).
@@ -107,6 +67,7 @@
     claude-code
     ffmpeg
     freecad
+    orca-slicer
   ];
 
   # Corporate CA bundle + OpenSSL legacy renegotiation for the corp VPN/proxy.
