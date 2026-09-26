@@ -46,6 +46,26 @@
     enable = true;
     openFirewall = true;
 
+    # Run as a user service in alexandre's Plasma session, so the Launch
+    # buttons open KStars and PHD2 on this desktop. The hardened system unit
+    # looked them up on a PATH of coreutils only ("failed to spawn kstars: No
+    # such file or directory"). It also had no display, D-Bus or home to run
+    # them with. SDDM autologin starts the session, and the server, at boot.
+    #
+    # Being alexandre also covers capturesDir, which sits on the astrophoto
+    # disk, owned by him behind a 0700 mount point.
+    user = "alexandre";
+    apps.enable = true;
+    # KStars looks up each driver's binary on PATH before starting it, and
+    # the module's default (kstars and phd2 only) finds none of the cameras.
+    apps.packages = with pkgs; [
+      kstars
+      phd2
+      indi-full
+      indi-3rdparty.indi-toupbase
+      indi-3rdparty.indi-playerone
+    ];
+
     capturesDir = "/run/media/alexandre/datas/astrophoto";
     dsoTileDir = "/home/alexandre/junos-data/dso";
     httpAddr  = "0.0.0.0:8080";
@@ -65,19 +85,8 @@
 
   # nofail means nothing waits for the disk, so declare the dependency
   # junos-web really has. Without capturesDir it retries every 5s forever.
-  systemd.services.junos-web.unitConfig.RequiresMountsFor =
+  systemd.user.services.junos-web.unitConfig.RequiresMountsFor =
     "/run/media/alexandre/datas";
-
-  # Run as alexandre. capturesDir sits on the astrophoto disk, owned by him
-  # behind a 0700 mount point, so the default DynamicUser cannot traverse it:
-  # every /api/files/* request answers 500 and the Files tab stays empty. Being
-  # the owner also fixes the writes (thumbnail cache, rename, delete).
-  # ProtectHome=tmpfs still hides the rest of his home.
-  systemd.services.junos-web.serviceConfig = {
-    DynamicUser = lib.mkForce false;
-    User  = "alexandre";
-    Group = "users";
-  };
 
   environment.systemPackages = with pkgs; [
     rustup
