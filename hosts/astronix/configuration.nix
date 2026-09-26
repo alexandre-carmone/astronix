@@ -59,8 +59,8 @@
     ];
     # Or: bring your own cert (autoGenerate becomes irrelevant)
     tls.autoGenerate = true;
-    #tls.cert = "/run/secrets/rekos-cert.pem";
-    #tls.key  = "/run/secrets/rekos-key.pem";
+    #tls.cert = "/run/secrets/junos-cert.pem";
+    #tls.key  = "/run/secrets/junos-key.pem";
   };
 
   # nofail means nothing waits for the disk, so declare the dependency

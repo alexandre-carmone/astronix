@@ -7,8 +7,8 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    rekos-web = {
-      url = "github:alexandre-carmone/ekos-web-rust";
+    junos = {
+      url = "github:alexandre-carmone/Junos";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     catppuccin.url = "github:catppuccin/nix/release-26.05";
@@ -38,7 +38,7 @@
         ./hosts/astronix/configuration.nix
         home-manager.nixosModules.home-manager
         catppuccin.nixosModules.catppuccin
-        inputs.rekos-web.nixosModules.default
+        inputs.junos.nixosModules.default
       ];
     };
 

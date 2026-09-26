@@ -14,7 +14,7 @@ Both run user `alexandre` and share the astro stack: INDI, KStars, PHD2, Siril.
 ## Layout
 
 ```
-flake.nix              inputs (nixpkgs fork, home-manager, rekos-web, catppuccin) + the two hosts
+flake.nix              inputs (nixpkgs fork, home-manager, junos, catppuccin) + the two hosts
 justfile               rebuild/update/gc recipes
 modules/
   common.nix           base config; imports the modules below
