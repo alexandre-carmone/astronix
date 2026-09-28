@@ -7,6 +7,7 @@
     ../../modules/astro.nix
     ../../modules/desktop-plasma.nix
     ../../modules/wifi-hotspot.nix
+    ../../modules/ekoslive.nix
   ];
 
   networking.hostName = "astronomix";
@@ -87,6 +88,15 @@
   # junos-web really has. Without capturesDir it retries every 5s forever.
   systemd.user.services.junos-web.unitConfig.RequiresMountsFor =
     "/run/media/alexandre/datas";
+
+  # Launching KStars connects Ekos Live to junos-web, whose httpAddr is on
+  # port 8080. junos-server accepts any username and password.
+  services.astronix.ekosLive = {
+    enable = true;
+    server = "http://localhost:8080";
+    username = "alexandre";
+    password = "junos";
+  };
 
   environment.systemPackages = with pkgs; [
     rustup
