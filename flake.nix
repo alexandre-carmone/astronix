@@ -42,8 +42,8 @@
       ];
     };
 
-    # The same laptop in light and dark: Catppuccin flavor, GNOME color-scheme
-    # and wallpaper. darkman rebuilds into the other at sunrise/sunset.
+    # The same laptop in light and dark: Catppuccin flavor and GNOME
+    # color-scheme. darkman rebuilds into the other at sunrise/sunset.
     nixosConfigurations.dev = mkDev "light";
     nixosConfigurations.dev-dark = mkDev "dark";
   };

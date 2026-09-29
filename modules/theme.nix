@@ -15,7 +15,4 @@ in
   # Only the light scheme needs this; under dark GNOME already draws light
   # text. See desktop-gnome.nix.
   forceLightText = !isDark;
-  # One wallpaper per scheme. Keep both keys, even when they match.
-  wallpaperLight = "file:///home/alexandre/Pictures/wallpapers/master_noth_american.png";
-  wallpaperDark = "file:///home/alexandre/Pictures/wallpapers/master_noth_american.png";
 }

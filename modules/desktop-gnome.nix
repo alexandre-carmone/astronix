@@ -55,15 +55,24 @@ in
           accent-color = "purple";
           color-scheme = preset.colorScheme;
         };
-        # Wallpaper. lockAll means the GUI can't change it, so set it here.
-        "org/gnome/desktop/background" = {
-          picture-uri = preset.wallpaperLight;
-          picture-uri-dark = preset.wallpaperDark;
-          picture-options = "zoom";
+        # Wallpaper slideshow from the Wallpaper Slideshow extension. It sets
+        # picture-uri itself, so that key must stay out of this locked
+        # database.
+        "org/gnome/desktop/background".picture-options = "zoom";
+        "org/gnome/shell/extensions/azwallpaper" = {
+          slideshow-directory = "/home/alexandre/Pictures/wallpapers";
+          # (hours, minutes, seconds) per wallpaper.
+          slideshow-slide-duration = lib.gvariant.mkTuple [
+            (lib.gvariant.mkInt32 0)
+            (lib.gvariant.mkInt32 15)
+            (lib.gvariant.mkInt32 0)
+          ];
+          # Updates come from nixpkgs, not extensions.gnome.org.
+          update-notifier-enabled = false;
         };
-        "org/gnome/desktop/screensaver" = {
-          picture-uri = if theme == "dark" then preset.wallpaperDark else preset.wallpaperLight;
-        };
+        # The extension doesn't touch the lock screen, so it keeps one image.
+        "org/gnome/desktop/screensaver".picture-uri =
+          "file:///home/alexandre/Pictures/wallpapers/master_noth_american.png";
         "org/gnome/shell/extensions/tilingshell" = {
           inner-gaps = lib.gvariant.mkUint32 8;
           outer-gaps = lib.gvariant.mkUint32 8;
@@ -88,6 +97,7 @@ in
             "rounded-window-corners@fxgn"
             "Vitals@CoreCoding.com"
             "space-bar@luchrioh"
+            "azwallpaper@azwallpaper.gitlab.com"
           ];
         };
       };
@@ -102,6 +112,7 @@ in
     gnomeExtensions.rounded-window-corners-reborn
     gnomeExtensions.vitals
     gnomeExtensions.space-bar
+    gnomeExtensions.wallpaper-slideshow
     adwaita-icon-theme
   ];
 }
