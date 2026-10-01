@@ -6,6 +6,7 @@
     ../../modules/common.nix
     ../../modules/astro.nix
     ../../modules/desktop-gnome.nix
+    ../../modules/darkman.nix
     ../../modules/docker.nix
     ../../modules/wine.nix
     ../../modules/autostakkert.nix
@@ -35,19 +36,6 @@
   # SCSI generic driver, for the /dev/sgN nodes. MakeMKV drives the optical
   # drive through /dev/sg*, not /dev/sr0. Needed to read UHD Blu-rays.
   boot.kernelModules = [ "sg" ];
-
-  # darkman switches the theme by rebuilding, which needs root (see
-  # modules/darkman.nix). These two exact commands run without a password.
-  # Nothing else does.
-  security.sudo.extraRules = [
-    {
-      users = [ "alexandre" ];
-      commands = [
-        { command = "/run/current-system/sw/bin/nixos-rebuild switch --flake /home/alexandre/astronix#dev-dark"; options = [ "NOPASSWD" ]; }
-        { command = "/run/current-system/sw/bin/nixos-rebuild switch --flake /home/alexandre/astronix#dev"; options = [ "NOPASSWD" ]; }
-      ];
-    }
-  ];
 
   # Synaptics fingerprint reader (USB 06cb:00f0), driven by libfprint. NixOS
   # wires it into GDM login, screen unlock and sudo. Enroll with

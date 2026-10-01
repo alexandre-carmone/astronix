@@ -16,13 +16,15 @@
 
   outputs = { self, nixpkgs, home-manager, catppuccin, ... }@inputs:
   let
-    # Builds the dev laptop for one theme. `theme` reaches the preset in
-    # modules/theme.nix through specialArgs.
-    mkDev = theme: nixpkgs.lib.nixosSystem {
+    # Builds a GNOME host for one theme. Both args reach the modules through
+    # specialArgs: `theme` picks the preset in modules/theme.nix, and `host`,
+    # the flake attribute of the light variant, tells modules/darkman.nix
+    # which pair of outputs to rebuild between.
+    mkGnomeHost = host: theme: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = { inherit inputs theme; };
+      specialArgs = { inherit inputs theme host; };
       modules = [
-        ./hosts/dev/configuration.nix
+        ./hosts/${host}/configuration.nix
         home-manager.nixosModules.home-manager
         catppuccin.nixosModules.catppuccin
       ];
@@ -42,9 +44,13 @@
       ];
     };
 
-    # The same laptop in light and dark: Catppuccin flavor and GNOME
+    # Each GNOME host in light and dark: Catppuccin flavor and GNOME
     # color-scheme. darkman rebuilds into the other at sunrise/sunset.
-    nixosConfigurations.dev = mkDev "light";
-    nixosConfigurations.dev-dark = mkDev "dark";
+    nixosConfigurations.dev = mkGnomeHost "dev" "light";
+    nixosConfigurations.dev-dark = mkGnomeHost "dev" "dark";
+
+    # The gaming desktop.
+    nixosConfigurations.gamix = mkGnomeHost "gamix" "light";
+    nixosConfigurations.gamix-dark = mkGnomeHost "gamix" "dark";
   };
 }

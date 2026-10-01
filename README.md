@@ -1,6 +1,6 @@
 # astronix
 
-NixOS flake for two astrophotography machines.
+NixOS flake for two astrophotography machines and a gaming desktop.
 
 ## Hosts
 
@@ -8,13 +8,15 @@ NixOS flake for two astrophotography machines.
 | --- | --- | --- |
 | `astronix` | `astronomix` | The rig. Headless Plasma 6 on X11, SDDM autologin, xrdp, a fake EDID for the virtual display, a WiFi hotspot fallback, and the `junos-web` capture app. |
 | `dev` | `inix` | The workstation. GNOME, DisplayLink dock, corporate CA and VPN bits, dev tooling. |
+| `gamix` | `gamix` | The gaming desktop. GNOME on an NVIDIA card (open modules), Steam with Proton-GE and a gamescope session, Heroic, GameMode, MangoHud. |
 
-Both run user `alexandre` and share the astro stack: INDI, KStars, PHD2, Siril.
+All three run user `alexandre` and share the astro stack: INDI, KStars, PHD2, Siril.
+The GNOME hosts (`dev`, `gamix`) each have a `-dark` twin for darkman.
 
 ## Layout
 
 ```
-flake.nix              inputs (nixpkgs fork, home-manager, junos, catppuccin) + the two hosts
+flake.nix              inputs (nixpkgs fork, home-manager, junos, catppuccin) + the hosts
 justfile               rebuild/update/gc recipes
 modules/
   common.nix           base config; imports the modules below
@@ -23,7 +25,7 @@ modules/
   input.nix            QMK, keyd esc<->caps, qwerty-fr layout
   home.nix             home-manager + Catppuccin, Ghostty, Zellij
   theme.nix            light/dark settings, shared by both layers
-  darkman.nix          rebuilds into the other theme at sunrise/sunset (dev)
+  darkman.nix          rebuilds into the other theme at sunrise/sunset (dev, gamix)
   keyring.nix          keyring opt-out
   zsh.nix              zsh + oh-my-zsh
   astro.nix            astro stack (INDI + apps)
@@ -32,7 +34,8 @@ modules/
   graxpert.nix         GraXpert, from the upstream bundle
   autostakkert.nix     AutoStakkert!4, under Wine (dev)
   desktop-plasma.nix   headless Plasma + xrdp (astronix)
-  desktop-gnome.nix    GNOME (dev)
+  desktop-gnome.nix    GNOME (dev, gamix)
+  gaming.nix           Steam, Proton-GE, gamescope, GameMode, MangoHud, Heroic (gamix)
   docker.nix           Docker (dev)
   wine.nix             Wine + bottles (dev)
   printing.nix         CUPS + the office printer (dev)
@@ -41,6 +44,7 @@ modules/
 hosts/
   astronix/            configuration.nix + hardware-configuration.nix
   dev/                 configuration.nix + hardware-configuration.nix + displaylink.nix + certs/
+  gamix/               configuration.nix + hardware-configuration.nix + nvidia.nix
 ```
 
 Each host's `configuration.nix` only composes modules and adds what is unique
@@ -50,7 +54,8 @@ to that machine.
 
 `just` is installed on every host (see `modules/common.nix`); run it from this
 repo. Recipes default to the host you are on — `astronomix` maps to `astronix`,
-anything else to `dev` — and take a flake attribute for any other:
+`gamix` to `gamix`, anything else to `dev` — and take a flake attribute for any
+other:
 
 ```sh
 just              # list every recipe

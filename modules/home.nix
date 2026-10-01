@@ -14,7 +14,7 @@ in
   home-manager.backupFileExtension = "backup";
 
   home-manager.users.alexandre = { pkgs, inputs, ... }: {
-    imports = [ inputs.catppuccin.homeModules.catppuccin ./darkman.nix ];
+    imports = [ inputs.catppuccin.homeModules.catppuccin ];
     catppuccin.enable = true;
     catppuccin.flavor = preset.flavor;
     catppuccin.accent = "mauve";

@@ -1,8 +1,9 @@
 { lib, pkgs, theme ? "light", ... }:
 
-# GNOME for the dev workstation: GDM, a trimmed-down GNOME, purple accent,
-# qwerty-fr keyboard and a few shell extensions. The light/dark bits come from
-# the shared theme preset, so they follow the `theme` flake arg.
+# GNOME for the dev workstation and the gaming desktop: GDM, a trimmed-down
+# GNOME, purple accent, qwerty-fr keyboard and a few shell extensions. The
+# light/dark bits come from the shared theme preset, so they follow the
+# `theme` flake arg.
 let
   preset = import ./theme.nix theme;
 in

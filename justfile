@@ -3,7 +3,7 @@
 
 # Flake attribute for the running machine. Override it on any recipe:
 # `just switch astronix`.
-host := if `hostname` == "astronomix" { "astronix" } else { "dev" }
+host := if `hostname` == "astronomix" { "astronix" } else if `hostname` == "gamix" { "gamix" } else { "dev" }
 flake := justfile_directory()
 
 _default:
@@ -42,13 +42,13 @@ update:
 update-input input:
     nix flake update {{input}} --flake {{flake}}
 
-# Switch the dev laptop to dark, as darkman does at dusk.
+# Switch this GNOME host to dark, as darkman does at dusk.
 dark:
-    sudo nixos-rebuild switch --flake {{flake}}#dev-dark
+    sudo nixos-rebuild switch --flake {{flake}}#{{host}}-dark
 
-# Switch the dev laptop back to the light variant.
+# Switch this GNOME host back to the light variant.
 light:
-    sudo nixos-rebuild switch --flake {{flake}}#dev
+    sudo nixos-rebuild switch --flake {{flake}}#{{host}}
 
 # List system generations.
 generations:
