@@ -54,6 +54,8 @@
     ffmpeg
     freecad
     orca-slicer
+    kubectl
+    kubelogin-oidc # `kubectl oidc-login`, the exec plugin ~/.kube/config calls for the SSO clusters
   ];
 
   # Corporate CA bundle and legacy renegotiation, for the corp VPN/proxy.
