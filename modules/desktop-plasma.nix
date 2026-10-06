@@ -59,4 +59,24 @@
   users.users.alexandre.packages = with pkgs; [
     kdePackages.kate
   ];
+
+  # Dark only. Each login applies the Breeze Dark color scheme and turns off
+  # Plasma's time-of-day light/dark switching. Going through Plasma's own tool
+  # also recolours GTK apps (PHD2) and sets the portal color-scheme Ghostty
+  # follows. It is a no-op once the scheme is set. Only the color scheme, not
+  # the Breeze Dark global theme: that would also reset the wallpaper and
+  # cursor every login.
+  systemd.user.services.plasma-dark = {
+    description = "Apply the Breeze Dark color scheme";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    # After kded, whose gtkconfig module recolours GTK on the change.
+    after = [ "graphical-session.target" "plasma-kded6.service" ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      ${pkgs.kdePackages.kconfig}/bin/kwriteconfig6 --file kdeglobals \
+        --group KDE --key AutomaticLookAndFeel false
+      ${pkgs.kdePackages.plasma-workspace}/bin/plasma-apply-colorscheme BreezeDark
+    '';
+  };
 }

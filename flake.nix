@@ -33,9 +33,10 @@
   {
     nixosConfigurations.astronix = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      # The rig has no light/dark switching, but modules/home.nix still needs a
-      # theme to pick a Catppuccin flavor. Pin it to latte.
-      specialArgs = { inherit inputs; theme = "light"; };
+      # The rig is dark only: no darkman, and modules/desktop-plasma.nix pins
+      # Plasma to Breeze Dark. This picks the matching Catppuccin flavor
+      # (mocha) in modules/home.nix.
+      specialArgs = { inherit inputs; theme = "dark"; };
       modules = [
         ./hosts/astronix/configuration.nix
         home-manager.nixosModules.home-manager
