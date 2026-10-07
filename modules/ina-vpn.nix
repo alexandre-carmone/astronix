@@ -86,5 +86,6 @@ in
   environment.systemPackages = [
     inavpn
     tb-otp # enroll, set-pin, status
+    pkgs.libsecret # secret-tool, to store the LDAP password
   ];
 }
