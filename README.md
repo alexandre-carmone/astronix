@@ -39,6 +39,8 @@ modules/
   docker.nix           Docker (dev)
   wine.nix             Wine + bottles (dev)
   printing.nix         CUPS + the office printer (dev)
+  ina-vpn.nix          `inavpn`: INA VPN in one command, 2FA from tb-otp (dev)
+  ina-vpn-auto/tb-otp/ tb-otp + the VPN script; vendor/ is built from the AppImage
   syncthing.nix        services.astronix.syncthing (dev)
   wifi-hotspot.nix     services.astronix.wifi (astronix)
 hosts/

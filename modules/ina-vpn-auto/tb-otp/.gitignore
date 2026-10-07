@@ -1,0 +1,10 @@
+# Extracted from the installed TrustBuilder; proprietary, never commit.
+vendor/
+node_modules
+
+# Live token state. Holds one identity and one ratchet. Never commit, never copy.
+state.json
+state.json.tmp
+state.json.lock/
+
+.env

@@ -1,0 +1,8 @@
+{
+  "name": "tb-otp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Headless OTP generator for TrustBuilder / inWebo Authenticator 6",
+  "bin": { "tb-otp": "src/cli.js" },
+  "dependencies": {}
+}
