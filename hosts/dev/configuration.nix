@@ -13,6 +13,7 @@
     ../../modules/graxpert.nix
     ../../modules/syncthing.nix
     ../../modules/printing.nix
+    ../../modules/ina-vpn.nix
     ./displaylink.nix
   ];
 
