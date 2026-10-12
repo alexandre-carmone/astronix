@@ -62,6 +62,7 @@ in
     programs.lazygit = {
       enable = true;
     };
+    home.pointerCursor.enable = true;
     home.pointerCursor.gtk.enable = true;
     home.stateVersion = "26.05";
   };

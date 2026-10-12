@@ -32,11 +32,11 @@ let
     # GNOME-50 session ships only gtk4's org.gtk.Settings.FileChooser schema,
     # and the missing gtk3 one is a fatal g_error. The hook bundles imppg's own
     # copy, so the lookup works in any session.
-    nativeBuildInputs = with pkgs; [ cmake pkg-config wxGTK32 wrapGAppsHook3 ];
+    nativeBuildInputs = with pkgs; [ cmake pkg-config wxwidgets_3_2 wrapGAppsHook3 ];
 
     buildInputs = with pkgs; [
       boost
-      wxGTK32      # provides wx-config; built with the gtk3 toolkit + OpenGL
+      wxwidgets_3_2 # provides wx-config; built with the gtk3 toolkit + OpenGL
       cfitsio      # USE_CFITSIO    — FITS files
       glew         # USE_OPENGL_BACKEND — GPU processing
       libGL
@@ -45,10 +45,10 @@ let
       gsettings-desktop-schemas # GTK reads these for chooser/font/theme
       # wx-config links -lSM -lICE -lX11 -lXext. List them so they land in
       # imppg's RPATH, or it won't launch.
-      xorg.libSM
-      xorg.libICE
-      xorg.libX11
-      xorg.libXext
+      libsm
+      libice
+      libx11
+      libxext
     ];
 
     meta = with pkgs.lib; {

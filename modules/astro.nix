@@ -24,15 +24,15 @@ let
     libGL
     libxkbcommon
     libxcb-cursor
-    xorg.libX11
-    xorg.libxcb
-    xorg.libXext
-    xorg.libXrender
-    xorg.xcbutil
-    xorg.xcbutilwm
-    xorg.xcbutilimage
-    xorg.xcbutilkeysyms
-    xorg.xcbutilrenderutil
+    libx11
+    libxcb
+    libxext
+    libxrender
+    libxcb-util
+    libxcb-wm
+    libxcb-image
+    libxcb-keysyms
+    libxcb-render-util
   ];
 
   siril = pkgs.symlinkJoin {

@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:alexandre-carmone/nixpkgs/3fca3558f542c29369b259d2f709c7a1ed45fb03";
     home-manager = {
-      url = "github:nix-community/home-manager/release-26.05";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     junos = {
