@@ -53,10 +53,12 @@ secret() {
 
 # Generate or ask for a code. The final attempt is always typed, so a tb-otp problem
 # (desynced ratchet, wrong PIN, missing state) can never lock you out of the VPN.
+# Its stderr stays on the terminal: that is where tb-otp asks for the PIN when the
+# keyring has none, and where it says why it failed.
 otp_get() {
   local try=$1 code=
   if [ ${#OTP_ARGV[@]} -gt 0 ] && [ "$try" != 3 ]; then
-    if code=$("${OTP_ARGV[@]}" 2>/dev/null) && [ -n "$code" ]; then
+    if code=$("${OTP_ARGV[@]}") && [ -n "$code" ]; then
       echo "  code from ${OTP_ARGV[0]##*/}" >&2
       printf '%s' "$code"
       return
