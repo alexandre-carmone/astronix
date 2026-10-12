@@ -1,5 +1,19 @@
 { config, lib, pkgs, ... }:
 
+let
+  # Orca 2.4.2 segfaults on every slice under native Wayland (EGL) since Mesa
+  # 26.2.4: the plate-thumbnail draw reaches glDrawElements with no index
+  # buffer bound and Mesa memcpy's from NULL. Under XWayland (GLX) it slices
+  # fine. Drop this wrapper once Mesa or Orca ships a fix.
+  orca-slicer = pkgs.symlinkJoin {
+    name = "orca-slicer-x11";
+    paths = [ pkgs.orca-slicer ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram "$out/bin/orca-slicer" --set GDK_BACKEND x11
+    '';
+  };
+in
 {
   imports = [
     ./hardware-configuration.nix
