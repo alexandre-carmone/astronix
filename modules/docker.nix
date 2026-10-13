@@ -1,7 +1,7 @@
 { ... }:
 
-# Docker daemon and CLI. The "docker" group lets the user reach the daemon
-# socket without sudo.
+# Docker daemon and CLI.
+# The "docker" group gives access to the daemon socket without sudo.
 {
   virtualisation.docker.enable = true;
 

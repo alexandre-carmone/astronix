@@ -1,9 +1,9 @@
 { lib, pkgs, theme ? "light", ... }:
 
-# GNOME for the dev workstation and the gaming desktop: GDM, a trimmed-down
-# GNOME, purple accent, qwerty-fr keyboard and a few shell extensions. The
-# light/dark bits come from the shared theme preset, so they follow the
-# `theme` flake arg.
+# GNOME for the dev workstation and the gaming desktop.
+# GDM, a trimmed GNOME, purple accent, qwerty-fr keyboard, a few extensions.
+# Light/dark settings come from the theme preset (./theme.nix).
+# They follow the `theme` flake argument.
 let
   preset = import ./theme.nix theme;
 in
@@ -11,12 +11,13 @@ in
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
-  # Keep the core apps; drop the developer tools and the games.
+  # Keep the core apps. Drop the developer tools and the games.
   services.gnome.core-apps.enable = true;
   services.gnome.core-developer-tools.enable = false;
   services.gnome.games.enable = false;
-  # Drop the core apps we don't use. What's left: Files, Disk Usage Analyzer,
-  # Settings, and Disks (enabled separately via programs.gnome-disks).
+  # Remove the core apps we don't use.
+  # What's left: Files, Disk Usage Analyzer, Settings and Disks.
+  # Disks is enabled on its own, via programs.gnome-disks.
   environment.gnome.excludePackages = with pkgs; [
     gnome-tour
     gnome-user-docs
@@ -51,13 +52,13 @@ in
       lockAll = true; # the GUI can't override these
       settings = {
         "org/gnome/desktop/interface" = {
-          # GNOME has no "mauve" accent; "purple" is the closest to the
-          # Catppuccin one set in home.nix.
+          # GNOME has no "mauve" accent. "purple" is the closest to the
+          # Catppuccin accent set in home.nix.
           accent-color = "purple";
           color-scheme = preset.colorScheme;
         };
-        # Wallpaper slideshow from the Wallpaper Slideshow extension. It sets
-        # picture-uri itself, so that key must stay out of this locked
+        # Wallpaper slideshow, from the Wallpaper Slideshow extension.
+        # It sets picture-uri itself. So keep that key out of this locked
         # database.
         "org/gnome/desktop/background".picture-options = "zoom";
         "org/gnome/shell/extensions/azwallpaper" = {
@@ -71,16 +72,16 @@ in
           # Updates come from nixpkgs, not extensions.gnome.org.
           update-notifier-enabled = false;
         };
-        # The extension doesn't touch the lock screen, so it keeps one image.
+        # The extension skips the lock screen. It gets one fixed image.
         "org/gnome/desktop/screensaver".picture-uri =
           "file:///home/alexandre/Pictures/wallpapers/master_noth_american.png";
         "org/gnome/shell/extensions/tilingshell" = {
           inner-gaps = lib.gvariant.mkUint32 8;
           outer-gaps = lib.gvariant.mkUint32 8;
         };
-        # Under the light scheme, blur-my-shell turns the top-bar text dark
-        # whenever a light window is maximized behind the panel. Keep it light
-        # so Vitals stays readable.
+        # With the light scheme, blur-my-shell turns the top bar text dark
+        # when a light window is maximized. Keep it light so Vitals stays
+        # readable.
         "org/gnome/shell/extensions/blur-my-shell/panel" = {
           force-light-text = preset.forceLightText;
         };

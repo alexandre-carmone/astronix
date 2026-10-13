@@ -1,7 +1,7 @@
 {config, pkgs, ...}:
 
-# DisplayLink dock: the evdi kernel module plus the DisplayLinkManager daemon,
-# started at boot.
+# DisplayLink dock.
+# Loads the evdi kernel module and starts DisplayLinkManager at boot.
 {
   environment.systemPackages = with pkgs; [
     displaylink
@@ -14,7 +14,7 @@
   systemd.services.dlm.wantedBy = [ "multi-user.target" ];
   systemd.services.displaylink-server = {
     enable = true;
-    # Start once udev has done its work.
+    # Start after udev.
     requires = [ "systemd-udevd.service" ];
     after = [ "systemd-udevd.service" ];
     wantedBy = [ "multi-user.target" ]; # start at boot

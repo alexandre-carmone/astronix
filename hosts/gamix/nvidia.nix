@@ -1,20 +1,23 @@
 { pkgs, ... }:
 
-# NVIDIA card driving the display directly (no iGPU, no PRIME). Turing or
-# newer, so the open kernel modules, which NVIDIA recommends for those cards.
+# The NVIDIA card drives the display directly. No iGPU, no PRIME.
+# It is Turing or newer, so it uses the open kernel modules.
+# NVIDIA recommends them for these cards.
 #
-# The nixpkgs module already turns on, for this driver: modesetting, its
-# fbdev (GNOME Wayland needs both), VA-API through nvidia-vaapi-driver, and
-# the kernel suspend notifier. They aren't repeated here.
+# The nixpkgs module already enables, for this driver:
+#   - modesetting and fbdev (GNOME Wayland needs both)
+#   - VA-API through nvidia-vaapi-driver
+#   - the kernel suspend notifier
+# So they are not repeated here.
 {
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.graphics.enable = true;
 
   hardware.nvidia = {
-    # No default from 560 on: the module asserts it is set either way.
+    # No default since driver 560. It must be set explicitly.
     open = true;
-    # Saves VRAM across suspend. Without it, GNOME Wayland comes back from
-    # sleep with corrupted or black windows.
+    # Saves VRAM across suspend.
+    # Without it, GNOME Wayland wakes up with corrupted or black windows.
     powerManagement.enable = true;
     nvidiaSettings = true;
   };

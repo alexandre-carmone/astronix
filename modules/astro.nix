@@ -1,23 +1,27 @@
 { pkgs, lib, ... }:
 
-# Astro stack for both hosts: INDI drivers via udev, the capture and processing
-# apps (kstars, phd2, siril, gimp), and rustdesk to drive the rig remotely.
+# Astro stack for every host:
+#   - INDI drivers, with their udev rules
+#   - capture and processing apps (kstars, phd2, siril, gimp)
+#   - rustdesk, to drive the rig remotely
 #
-# ImPPG has its own module, ./imppg.nix. So does the GSC star catalog,
-# ./gsc.nix: INDI's CCD Simulator needs it, but it weighs ~235 MB and only
-# serves simulated sessions, so move that import to hosts/dev to spare the rig.
+# ImPPG has its own module, ./imppg.nix.
+# So does the GSC star catalog, ./gsc.nix. INDI's CCD Simulator needs it.
+# It weighs ~235 MB and only serves simulated sessions.
+# To spare the rig, move that import to hosts/dev.
 let
-  # Siril 1.4 runs its Python scripts in a venv it builds itself, with
-  # numpy/scipy/PyQt6/sirilpy pip-installed into it. Those wheels are
-  # dynamically linked and can't find libstdc++/libz/Qt/X at import time.
-  # nix-ld does not help: the venv's python is a Nix binary, so it reads
-  # LD_LIBRARY_PATH, not NIX_LD_LIBRARY_PATH. Hence the wrapper below, which
-  # hands this path to the python child.
+  # Siril 1.4 runs its Python scripts in its own venv.
+  # It pip-installs numpy, scipy, PyQt6 and sirilpy into it.
+  # Those wheels are dynamically linked. At import, they can't find
+  # libstdc++, libz, Qt or X.
+  # nix-ld does not help. The venv's python is a Nix binary, so it reads
+  # LD_LIBRARY_PATH, not NIX_LD_LIBRARY_PATH.
+  # So the wrapper below passes these libraries to the python child.
   sirilVenvLibs = with pkgs; [
     stdenv.cc.cc.lib
     zlib
     glib
-    # PyQt6 (GUI scripts such as HDR_multiscale, VeraLux)
+    # PyQt6, for GUI scripts like HDR_multiscale and VeraLux
     fontconfig
     freetype
     dbus

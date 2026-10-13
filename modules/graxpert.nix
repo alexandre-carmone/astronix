@@ -1,13 +1,15 @@
 { pkgs, ... }:
 
-# GraXpert — gradient removal and AI denoising for astronomical images, by
-# Steffen Hirtle. Not in nixpkgs. Upstream ships only a cx_Freeze bundle: a
-# frozen CPython 3.10 with every dependency as a bundled .so, all looking for
-# libX11/libGL/libstdc++ in FHS paths NixOS doesn't have. autoPatchelfHook
-# rewrites their interpreter and RPATHs, so no FHS env or steam-run is needed.
+# GraXpert, by Steffen Hirtle. Not in nixpkgs.
+# Gradient removal and AI denoising for astronomical images.
 #
-# The AI models are not in the bundle. GraXpert downloads them on first use to
-# ~/.local/share/GraXpert; preferences live in ~/.config/GraXpert.
+# Upstream ships only a cx_Freeze bundle: a frozen CPython 3.10 with every
+# dependency as a .so. They look for libX11, libGL and libstdc++ in FHS
+# paths, which NixOS lacks. autoPatchelfHook fixes their interpreter and
+# RPATHs, so no FHS env or steam-run is needed.
+#
+# The AI models are not bundled. GraXpert downloads them on first use to
+# ~/.local/share/GraXpert. Preferences live in ~/.config/GraXpert.
 let
   graxpert = pkgs.stdenv.mkDerivation (finalAttrs: {
     pname = "graxpert";
@@ -40,10 +42,10 @@ let
       libice
     ];
 
-    # The bundled onnxruntime ships CUDA and TensorRT providers but not the
-    # libraries they need, so they never load: inference runs on CPU and logs
-    # one "Init provider bridge failed" line. Leave them unresolved rather than
-    # drag the whole CUDA closure in for dead code.
+    # The bundled onnxruntime has CUDA and TensorRT providers, but not their
+    # libraries. So they never load. Inference runs on CPU and logs one
+    # "Init provider bridge failed" line. Leave them unresolved instead of
+    # pulling in all of CUDA for dead code.
     autoPatchelfIgnoreMissingDeps = [
       "libcuda.so.1"
       "libcudart.so*"
@@ -67,10 +69,10 @@ let
       install -Dm644 frozen_application_license.txt \
         "$out/share/licenses/graxpert/frozen_application_license.txt"
 
-      # customtkinter copies its fonts to ~/.fonts on every start. The copies
-      # inherit the store's read-only bits, so the second start fails with
-      # EACCES and the UI falls back to "circle_shapes" drawing. Give the
-      # copies write permission back before launching.
+      # customtkinter copies its fonts to ~/.fonts at every start.
+      # The copies keep the store's read-only mode. So the second start fails
+      # with EACCES, and the UI falls back to "circle_shapes" drawing.
+      # Make the copies writable again before launch.
       mkdir -p "$out/libexec"
       cat > "$out/libexec/graxpert-fix-fonts" <<'EOF'
       #!/bin/sh
@@ -89,8 +91,8 @@ let
       makeWrapper "$out/opt/graxpert/GraXpert" "$out/bin/graxpert" \
         --run "$out/libexec/graxpert-fix-fonts"
 
-      # Icon.ico wraps a single 256x256 PNG. Unwrap it for desktops that don't
-      # read .ico.
+      # Icon.ico holds a single 256x256 PNG.
+      # Extract it for desktops that can't read .ico.
       iconOffset=$(od -An -tu4 -j 18 -N 4 Icon.ico | tr -d ' ')
       dd if=Icon.ico of=graxpert.png bs=1 skip="$iconOffset" status=none
       install -Dm644 graxpert.png \

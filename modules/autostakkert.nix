@@ -1,10 +1,10 @@
 { pkgs, ... }:
 
-# AutoStakkert!4 — Windows "lucky imaging" stacker for planetary, lunar and
-# solar work (freeware, by Emil Kraaikamp). It ships as a portable zip, so we
-# fetch it and run it under Wine in its own prefix. AutoStakkert writes its
-# settings next to its exe, so each launch copies the program files from the
-# read-only store into the writable prefix.
+# AutoStakkert!4, by Emil Kraaikamp. Freeware.
+# A Windows "lucky imaging" stacker for planetary, lunar and solar images.
+# It ships as a portable zip. We run it under Wine, in its own prefix.
+# It saves its settings next to its exe, but the store is read-only.
+# So each launch copies the program files into the writable prefix.
 let
   autostakkert = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
     pname = "autostakkert";
@@ -37,14 +37,14 @@ let
       mkdir -p "$out/bin"
       cat > "$out/bin/autostakkert" <<'EOF'
       #!/bin/sh
-      # Isolated Wine prefix; created automatically by wine on first launch.
+      # Own Wine prefix. Wine creates it on first launch.
       export WINEPREFIX="''${XDG_DATA_HOME:-$HOME/.local/share}/autostakkert/wineprefix"
       export WINEARCH=win64
-      # Don't nag to install Mono/Gecko; AutoStakkert needs neither.
+      # Skip the Mono and Gecko install prompts. AutoStakkert needs neither.
       export WINEDLLOVERRIDES="mscoree=;mshtml="
       appdir="$WINEPREFIX/drive_c/AutoStakkert"
       mkdir -p "$appdir"
-      # Refresh the program files from the store into the prefix.
+      # Copy the program files from the store into the prefix.
       cp -f "@sharedir@"/* "$appdir/" 2>/dev/null || true
       chmod -R u+w "$appdir"
       exec wine "$appdir/AutoStakkert.exe" "$@"
@@ -55,7 +55,7 @@ let
       wrapProgram "$out/bin/autostakkert" \
         --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.wineWowPackages.stable ]}
 
-      # Icon for the menu entry, pulled from the PE resources. Best effort.
+      # Menu icon, extracted from the exe. Best effort.
       mkdir -p "$out/share/pixmaps"
       ( cd "$TMPDIR" \
         && wrestool -x -t 14 "$out/share/autostakkert/AutoStakkert.exe" > as.ico 2>/dev/null \

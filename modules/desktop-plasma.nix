@@ -1,9 +1,11 @@
 { pkgs, ... }:
 
-# Headless Plasma desktop for the rig: Plasma 6 on X11, SDDM autologin, xrdp
-# for remote access. A fake EDID on HDMI-A-1 keeps the connector reported as
-# connected at 1920x1080 from boot, monitor or no monitor; without it Xorg
-# falls back to 1024x768. The modelines below let the display be resized.
+# Headless Plasma desktop for the rig.
+# Plasma 6 on X11, SDDM autologin, and xrdp for remote access.
+#
+# A fake EDID makes HDMI-A-1 look connected at 1920x1080 from boot,
+# with or without a monitor. Without it, Xorg falls back to 1024x768.
+# The modelines below let you resize the display.
 {
   services.displayManager.defaultSession = "plasmax11";
   services.displayManager.sddm = {
@@ -21,8 +23,8 @@
   };
   services.desktopManager.plasma6.enable = true;
 
-  # Layout for the local and remote session. Overrides the qwerty-fr default
-  # from modules/input.nix.
+  # Keyboard layout for local and remote sessions.
+  # Overrides the qwerty-fr default from modules/input.nix.
   services.xserver.xkb = {
     layout = "us";
     variant = "";
@@ -60,17 +62,18 @@
     kdePackages.kate
   ];
 
-  # Dark only. Each login applies the Breeze Dark color scheme and turns off
-  # Plasma's time-of-day light/dark switching. Going through Plasma's own tool
-  # also recolours GTK apps (PHD2) and sets the portal color-scheme Ghostty
-  # follows. It is a no-op once the scheme is set. Only the color scheme, not
-  # the Breeze Dark global theme: that would also reset the wallpaper and
-  # cursor every login.
+  # Dark only. At each login:
+  #   - apply the Breeze Dark color scheme
+  #   - turn off Plasma's automatic light/dark switching
+  # Plasma's own tool also recolours GTK apps (PHD2). It also sets the portal
+  # color scheme that Ghostty follows. It does nothing once the scheme is set.
+  # Only the color scheme, not the Breeze Dark global theme. The global theme
+  # would also reset the wallpaper and cursor at every login.
   systemd.user.services.plasma-dark = {
     description = "Apply the Breeze Dark color scheme";
     wantedBy = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
-    # After kded, whose gtkconfig module recolours GTK on the change.
+    # After kded. Its gtkconfig module recolours GTK on the change.
     after = [ "graphical-session.target" "plasma-kded6.service" ];
     serviceConfig.Type = "oneshot";
     script = ''

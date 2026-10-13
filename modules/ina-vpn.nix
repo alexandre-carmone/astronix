@@ -1,25 +1,25 @@
-# INA VPN in one command: `inavpn`. It runs the Keycloak SAML login, answers the
-# inWebo 2FA with a code from tb-otp, then hands the cookie to openconnect.
-# Imported only by hosts/dev. Source and the whole story are in
-# ./ina-vpn-auto/tb-otp (README.md).
+# INA VPN in one command: `inavpn`.
+# It does the Keycloak SAML login and answers the inWebo 2FA with a tb-otp
+# code. Then it hands the cookie to openconnect.
+# Imported only by hosts/dev. Details in ./ina-vpn-auto/tb-otp/README.md.
 #
 # One-time setup, as alexandre:
 #   secret-tool store --label='INA LDAP' ldap password   # the INA password
 #   tb-otp enroll --code <activation code>               # a NEW token, from INA selfcare
 #   tb-otp set-pin                                       # its PIN, into the keyring
-# and put the INA username in ~/.config/ina-vpn.env:
+# Then put the INA username in ~/.config/ina-vpn.env:
 #   echo 'INA_LOGIN=<sso user>' > ~/.config/ina-vpn.env
 #
-# Then `inavpn` connects in the foreground; Ctrl-C disconnects. Extra arguments
-# go to openconnect, e.g. `inavpn --background`.
+# `inavpn` connects in the foreground. Ctrl-C disconnects.
+# Extra arguments go to openconnect, e.g. `inavpn --background`.
 { lib, pkgs, ... }:
 
 let
-  # TrustBuilder Authenticator 6. tb-otp drives the inWebo library inside it.
-  # That library is proprietary and not on npm, so the build lifts it out of
-  # the AppImage rather than this repo carrying it. The URL is unversioned: when
-  # TrustBuilder ships a new build the hash breaks; refetch it with
-  # `nix store prefetch-file <url>`.
+  # TrustBuilder Authenticator 6. tb-otp uses the inWebo library inside it.
+  # That library is proprietary and not on npm. So the build extracts it from
+  # the AppImage, and this repo does not carry it.
+  # The URL has no version. When TrustBuilder ships a new build, the hash
+  # breaks. Refetch it with `nix store prefetch-file <url>`.
   authenticator = pkgs.appimageTools.extract {
     pname = "trustbuilder";
     version = "6.38.0.5319";
@@ -62,7 +62,7 @@ let
     };
   };
 
-  # --prefix, not --set: sudo has to come from /run/wrappers on the system PATH.
+  # --prefix, not --set. sudo must still come from /run/wrappers on the PATH.
   inavpn = pkgs.runCommand "inavpn" {
     nativeBuildInputs = [ pkgs.makeWrapper ];
     meta.mainProgram = "inavpn";

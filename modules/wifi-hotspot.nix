@@ -1,3 +1,5 @@
+# Preconfigured wifi networks, with a hotspot as fallback.
+#
 # Example:
 #
 #   services.astronix.wifi = {
@@ -117,9 +119,9 @@ in
     networking.networkmanager.enable = true;
     networking.networkmanager.wifi.powersave = false;
 
-    # Lets hotspot clients get a DHCP lease (UDP 67) and resolve DNS (53)
-    # from the dnsmasq NetworkManager runs for the shared profile. Without
-    # them the AP is visible, clients associate, and no one gets an IP.
+    # Hotspot clients need DHCP (UDP 67) and DNS (53) from the dnsmasq that
+    # NetworkManager runs for the shared profile. Without these ports,
+    # clients can join the AP but never get an IP.
     networking.firewall.allowedUDPPorts = [ 53 67 ];
     networking.firewall.allowedTCPPorts = [ 53 ];
 

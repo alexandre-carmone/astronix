@@ -27,16 +27,16 @@
     };
   };
 
-  # The astrophoto data disk (internal NVMe, ext4, label "datas"). Declared
-  # here so it mounts at boot. Plasma used to mount it on demand through
-  # udisks2, which asked for a polkit password every boot, and junos-web
-  # crash-looped until someone typed it.
+  # The astrophoto data disk (internal NVMe, ext4, label "datas").
+  # Declared here so it mounts at boot.
+  # Plasma used to mount it on demand with udisks2. That asked for a polkit
+  # password at every boot, and junos-web crash-looped until someone typed it.
   #
-  # Keep the mount point as it is. capturesDir below and the KStars/Ekos
-  # sequences on the disk all point at /run/media/alexandre/datas.
+  # Keep this mount point. capturesDir below and the KStars/Ekos sequences
+  # on the disk all use /run/media/alexandre/datas.
   #
-  # nosuid/nodev are what udisks2 used. nofail means a dead disk breaks
-  # junos-web, not the boot.
+  # nosuid and nodev match what udisks2 used.
+  # nofail: a dead disk breaks junos-web, not the boot.
   fileSystems."/run/media/alexandre/datas" = {
     device = "/dev/disk/by-uuid/27246b7d-d14b-46b1-a3e6-606ef3a1da2a";
     fsType = "ext4";
@@ -47,18 +47,19 @@
     enable = true;
     openFirewall = true;
 
-    # Run as a user service in alexandre's Plasma session, so the Launch
-    # buttons open KStars and PHD2 on this desktop. The hardened system unit
-    # looked them up on a PATH of coreutils only ("failed to spawn kstars: No
-    # such file or directory"). It also had no display, D-Bus or home to run
-    # them with. SDDM autologin starts the session, and the server, at boot.
+    # Run as a user service in alexandre's Plasma session.
+    # This way the Launch buttons open KStars and PHD2 on this desktop.
+    # The hardened system unit could not run them. Its PATH had only
+    # coreutils ("failed to spawn kstars: No such file or directory").
+    # It also had no display, D-Bus or home.
+    # SDDM autologin starts the session, and the server, at boot.
     #
-    # Being alexandre also covers capturesDir, which sits on the astrophoto
-    # disk, owned by him behind a 0700 mount point.
+    # Running as alexandre also gives access to capturesDir. It is on the
+    # astrophoto disk, owned by alexandre, behind a 0700 mount point.
     user = "alexandre";
     apps.enable = true;
-    # KStars looks up each driver's binary on PATH before starting it, and
-    # the module's default (kstars and phd2 only) finds none of the cameras.
+    # KStars looks up each driver's binary on PATH before starting it.
+    # The module default (kstars and phd2 only) has no camera drivers.
     apps.packages = with pkgs; [
       kstars
       phd2
@@ -75,22 +76,23 @@
     tls.subjectAltNames = [
       "DNS:localhost"
       "IP:127.0.0.1"
-      "IP:0.0.0.0"   # the host's LAN IP — required for iOS Safari to accept the cert
+      "IP:0.0.0.0"   # the host's LAN IP. iOS Safari needs it to trust the cert
       "DNS:astro.lan"
     ];
-    # Or: bring your own cert (autoGenerate becomes irrelevant)
+    # Self-signed cert. To use your own, set tls.cert and tls.key instead.
     tls.autoGenerate = true;
     #tls.cert = "/run/secrets/junos-cert.pem";
     #tls.key  = "/run/secrets/junos-key.pem";
   };
 
-  # nofail means nothing waits for the disk, so declare the dependency
-  # junos-web really has. Without capturesDir it retries every 5s forever.
+  # With nofail, nothing waits for the disk. So junos-web waits for it here.
+  # Without capturesDir it retries every 5s forever.
   systemd.user.services.junos-web.unitConfig.RequiresMountsFor =
     "/run/media/alexandre/datas";
 
-  # Launching KStars connects Ekos Live to junos-web, whose httpAddr is on
-  # port 8080. junos-server accepts any username and password.
+  # At launch, KStars connects Ekos Live to junos-web.
+  # junos-web's httpAddr is on port 8080.
+  # junos-server accepts any username and password.
   services.astronix.ekosLive = {
     enable = true;
     server = "http://localhost:8080";
@@ -118,11 +120,10 @@
     IdleAction = "ignore";
   };
 
-  # RustDesk 1.4.9 dlopens libxdo instead of linking it, and nothing in its
-  # closure ships the library. Every lookup fails and RustDesk then drops all
-  # keyboard and mouse injection, silently. Video and clipboard still work, so
-  # the session connects and looks frozen. 1.4.5 linked libxdo directly, which
-  # is why this appeared with the September nixpkgs bump.
+  # RustDesk 1.4.9 loads libxdo at runtime (dlopen). Nothing in its closure
+  # ships it. Without libxdo, RustDesk silently drops all keyboard and mouse
+  # input. Video and clipboard still work, so the session looks frozen.
+  # 1.4.5 linked libxdo directly. The bug came with the September nixpkgs bump.
   systemd.user.services.rustdesk = {
     description = "RustDesk";
     wantedBy = [ "graphical-session.target" ];
@@ -131,8 +132,8 @@
     serviceConfig = {
       Type = "simple";
       ExecStart = "${pkgs.rustdesk-flutter}/bin/rustdesk";
-      # The package's own wrapper keeps what it inherits, so this only adds
-      # libxdo to the search path.
+      # The package's wrapper keeps inherited variables.
+      # So this only adds libxdo to the search path.
       Environment = [ "LD_LIBRARY_PATH=${pkgs.xdotool}/lib" ];
       Restart = "on-failure";
       RestartSec = 5;

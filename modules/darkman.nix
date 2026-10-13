@@ -1,15 +1,15 @@
 { host, ... }:
 
-# Switches a GNOME host between light and dark at sunrise and sunset. The
-# Catppuccin TUI themes are baked into the home-manager generation as
-# read-only store symlinks, so switching means rebuilding into the sibling
-# output (`#<host>` or `#<host>-dark`), not editing files at runtime. `host`
-# is that flake attribute, passed by mkGnomeHost in flake.nix.
+# Switches a GNOME host between light and dark at sunrise and sunset.
+# The Catppuccin TUI themes are read-only links in the store.
+# So switching means a rebuild into the other output: `#<host>` or
+# `#<host>-dark`. No files are edited at runtime.
+# `host` comes from mkGnomeHost in flake.nix.
 #
-# The rebuild needs root, so this also grants a NOPASSWD sudo rule for these
-# two exact commands. Nothing else runs without a password. Ghostty follows
-# the color-scheme on its own (see home.nix), so the terminal recolours
-# without waiting for the rebuild.
+# The rebuild needs root. A sudo rule allows these two exact commands
+# without a password. Nothing else.
+# Ghostty follows the color scheme on its own (see home.nix).
+# So the terminal changes color without waiting for the rebuild.
 let
   rebuild = target:
     "/run/current-system/sw/bin/nixos-rebuild switch --flake /home/alexandre/astronix#${target}";
@@ -30,8 +30,8 @@ in
   home-manager.users.alexandre.services.darkman = {
     enable = true;
     settings = {
-      # Sunrise and sunset come from these coordinates (Paris). Fixed coords
-      # keep the geoclue daemon out.
+      # Sunrise and sunset use these coordinates (Paris).
+      # Fixed coordinates mean no geoclue daemon.
       lat = 48.85;
       lng = 2.35;
       usegeoclue = false;

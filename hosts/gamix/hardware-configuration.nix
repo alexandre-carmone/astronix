@@ -1,11 +1,11 @@
-# PLACEHOLDER, so the flake evaluates before the machine exists. Replace this
-# whole file on the machine, after installing NixOS, with:
+# PLACEHOLDER. It lets the flake evaluate before the machine exists.
+# After installing NixOS, replace this whole file on the machine with:
 #
 #   nixos-generate-config --show-hardware-config > hosts/gamix/hardware-configuration.nix
 #
-# The generated one adds the real disk UUIDs, initrd modules, swap and CPU
-# microcode. Until then this assumes the partition labels from the NixOS
-# manual's install steps: `nixos` for / and `boot` for the ESP.
+# The real file adds disk UUIDs, initrd modules, swap and CPU microcode.
+# Until then, this uses the partition labels from the NixOS manual:
+# `nixos` for / and `boot` for the ESP.
 { lib, modulesPath, ... }:
 
 {

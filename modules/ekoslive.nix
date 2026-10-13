@@ -1,16 +1,16 @@
 { config, lib, pkgs, ... }:
 
-# Connects KStars to an Ekos Live server every time it starts, with no trip
-# to the Ekos Live dialog.
+# Connects KStars to an Ekos Live server at every start.
+# No need to open the Ekos Live dialog.
 #
-# KStars' own "Auto start" can't do it here. It keeps the password in the
-# keychain and connects only if it can read it back at startup, and KWallet
-# is off (./keyring.nix). So `kstars` is wrapped instead: before launch the
-# wrapper writes the server into kstarsrc, then a helper waits for Ekos to
-# come up on D-Bus and logs in with the credentials below.
+# KStars' own "Auto start" can't do it here. It needs the password from the
+# keychain, and KWallet is off (./keyring.nix). So `kstars` is wrapped:
+#   1. Before launch, the wrapper writes the server into kstarsrc.
+#   2. A helper waits for Ekos to appear on D-Bus.
+#   3. It then logs in with the credentials below.
 #
-# The wrapper replaces pkgs.kstars through an overlay, so the desktop
-# launcher and junos-web's Launch button both go through it.
+# An overlay replaces pkgs.kstars with the wrapper.
+# So the desktop launcher and junos-web's Launch button both use it.
 #
 # Example:
 #
@@ -27,8 +27,8 @@ let
   busctl = "${config.systemd.package}/bin/busctl";
   ekos = "${busctl} --user call -- org.kde.kstars /KStars/Ekos org.kde.kstars.Ekos";
 
-  # Ekos registers /KStars/Ekos only once KStars has loaded its catalogs,
-  # which takes a while. $1 is the KStars pid: give up if it exits first.
+  # Ekos appears at /KStars/Ekos only after KStars loads its catalogs.
+  # That takes a while. $1 is the KStars pid. Give up if KStars exits first.
   login = pkgs.writeShellScript "ekoslive-login" ''
     until ${ekos} setEkosLiveUser ss \
         ${escapeShellArg cfg.username} ${escapeShellArg cfg.password} 2>/dev/null; do
@@ -42,8 +42,8 @@ let
     ${pkgs.kdePackages.kconfig}/bin/kwriteconfig6 --file kstarsrc \
       --group EkosLive --key EkosLiveOfflineServer ${escapeShellArg cfg.server}
 
-    # A second kstars only raises the running one, which is logged in already.
-    # Logging in again would make it re-authenticate and drop the connection.
+    # A second kstars only raises the running one, already logged in.
+    # A new login would re-authenticate and drop the connection.
     if ! ${busctl} --user status org.kde.kstars >/dev/null 2>&1; then
       ${login} "$1" &
     fi

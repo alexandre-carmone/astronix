@@ -20,9 +20,10 @@
           dontConfigure = true;
           dontBuild = true;
 
-          # vendor/ holds neon-lib-js + iw-commons-js and their deps, lifted verbatim from
-          # the Authenticator 6 asar. They are on a private registry, so they are committed
-          # here rather than fetched. node_modules is a symlink onto vendor.
+          # vendor/ holds neon-lib-js, iw-commons-js and their deps.
+          # They are copied as-is from the Authenticator 6 asar.
+          # They live on a private registry, so they are committed, not fetched.
+          # node_modules is a symlink to vendor.
           installPhase = ''
             runHook preInstall
             if [ ! -d vendor ]; then

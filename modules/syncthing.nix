@@ -1,11 +1,11 @@
 # Declarative Syncthing sync, e.g. laptop <-> NAS.
 #
-# This config is the source of truth: devices and folders declared here are
-# pushed to Syncthing and override anything set in the GUI. Add device IDs and
-# folder rules, rebuild, and it syncs.
+# This config is the source of truth. Devices and folders declared here
+# override anything set in the GUI. Add device IDs and folders, rebuild,
+# and it syncs.
 #
-# Each folder sets its own direction (`type`) and, per remote, whether the data
-# is encrypted at rest there (`encryptionPasswordFiles`).
+# Each folder sets its direction (`type`). Per remote, it can also store the
+# data encrypted there (`encryptionPasswordFiles`).
 #
 # Example (in a host's configuration.nix):
 #
@@ -29,9 +29,11 @@
 #     };
 #   };
 #
-# Pairing, once: the first rebuild gives this host a device ID. Add it on the
-# NAS, share the same folder back, and put the NAS's ID in `devices.nas`. Read
-# this host's with:
+# Pairing, once:
+#   1. The first rebuild gives this host a device ID.
+#   2. Add that ID on the NAS and share the same folder back.
+#   3. Put the NAS's ID in `devices.nas`.
+# Read this host's ID with:
 #   syncthing --device-id --home=/home/alexandre/.config/syncthing
 { config, lib, ... }:
 
@@ -139,8 +141,8 @@ in
         devices = lib.mapAttrs (_: id: { inherit id; }) cfg.devices;
         folders = lib.mapAttrs (_: f: {
           inherit (f) path type;
-          # A device is a plain name unless it has an encryption password, in
-          # which case it becomes { name; encryptionPasswordFile; }.
+          # A device is a plain name. With an encryption password, it becomes
+          # { name; encryptionPasswordFile; }.
           devices = map (
             dev:
             if f.encryptionPasswordFiles ? ${dev} then

@@ -16,10 +16,11 @@
 
   outputs = { self, nixpkgs, home-manager, catppuccin, ... }@inputs:
   let
-    # Builds a GNOME host for one theme. Both args reach the modules through
-    # specialArgs: `theme` picks the preset in modules/theme.nix, and `host`,
-    # the flake attribute of the light variant, tells modules/darkman.nix
-    # which pair of outputs to rebuild between.
+    # Builds a GNOME host with one theme.
+    # Both args reach the modules through specialArgs.
+    # `theme` picks the preset in modules/theme.nix.
+    # `host` is the name of the light output. modules/darkman.nix uses it to
+    # switch between `host` and `host-dark`.
     mkGnomeHost = host: theme: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs theme host; };
@@ -33,9 +34,9 @@
   {
     nixosConfigurations.astronix = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      # The rig is dark only: no darkman, and modules/desktop-plasma.nix pins
-      # Plasma to Breeze Dark. This picks the matching Catppuccin flavor
-      # (mocha) in modules/home.nix.
+      # The rig is dark only. No darkman here.
+      # modules/desktop-plasma.nix forces Breeze Dark.
+      # This picks the matching Catppuccin flavor (mocha) in modules/home.nix.
       specialArgs = { inherit inputs; theme = "dark"; };
       modules = [
         ./hosts/astronix/configuration.nix
@@ -45,8 +46,9 @@
       ];
     };
 
-    # Each GNOME host in light and dark: Catppuccin flavor and GNOME
-    # color-scheme. darkman rebuilds into the other at sunrise/sunset.
+    # Each GNOME host has a light and a dark output.
+    # They differ in Catppuccin flavor and GNOME color scheme.
+    # darkman switches between them at sunrise and sunset.
     nixosConfigurations.dev = mkGnomeHost "dev" "light";
     nixosConfigurations.dev-dark = mkGnomeHost "dev" "dark";
 

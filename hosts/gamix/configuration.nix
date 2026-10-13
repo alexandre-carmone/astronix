@@ -14,8 +14,8 @@
   networking.hostName = "gamix";
 
   environment.systemPackages = with pkgs; [
-    # For the LazyVim config in ~/.config/nvim: nvim-treesitter compiles its
-    # grammars and Mason builds some servers.
+    # For LazyVim in ~/.config/nvim.
+    # nvim-treesitter compiles its grammars. Mason builds some servers.
     gcc
     gnumake
   ];

@@ -1,7 +1,8 @@
 { pkgs, ... }:
 
-# Base config for every host: nix/flakes, boot, networking, the user account
-# and the CLI tools. Imports the per-concern modules.
+# Base config for every host.
+# Nix and flakes, boot, networking, the user account and CLI tools.
+# It also imports the small shared modules below.
 {
   imports = [
     ./locale.nix

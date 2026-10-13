@@ -1,10 +1,10 @@
 { config, lib, pkgs, ... }:
 
 let
-  # Orca 2.4.2 segfaults on every slice under native Wayland (EGL) since Mesa
-  # 26.2.4: the plate-thumbnail draw reaches glDrawElements with no index
-  # buffer bound and Mesa memcpy's from NULL. Under XWayland (GLX) it slices
-  # fine. Drop this wrapper once Mesa or Orca ships a fix.
+  # Orca 2.4.2 crashes on every slice under native Wayland (EGL) since
+  # Mesa 26.2.4. The plate thumbnail calls glDrawElements with no index
+  # buffer, and Mesa reads from NULL. Under XWayland (GLX) it works.
+  # Remove this wrapper once Mesa or Orca ships a fix.
   orca-slicer = pkgs.symlinkJoin {
     name = "orca-slicer-x11";
     paths = [ pkgs.orca-slicer ];
@@ -34,9 +34,10 @@ in
 
   networking.hostName = "inix";
 
-  # Syncthing sync with the NAS. Paste the NAS device ID below; get this
-  # host's own with `syncthing --device-id --home=~/.config/syncthing` and add
-  # it on the NAS side.
+  # Syncthing sync with the NAS.
+  # Paste the NAS device ID below.
+  # Get this host's ID with `syncthing --device-id --home=~/.config/syncthing`,
+  # then add it on the NAS.
   #services.astronix.syncthing = {
   #  enable = true;
   #  devices.nas = "PASTE-NAS-DEVICE-ID-HERE";
@@ -49,13 +50,14 @@ in
   #  };
   #};
 
-  # SCSI generic driver, for the /dev/sgN nodes. MakeMKV drives the optical
-  # drive through /dev/sg*, not /dev/sr0. Needed to read UHD Blu-rays.
+  # SCSI generic driver. It creates the /dev/sgN nodes.
+  # MakeMKV talks to the optical drive through /dev/sg*, not /dev/sr0.
+  # Needed to read UHD Blu-rays.
   boot.kernelModules = [ "sg" ];
 
-  # Synaptics fingerprint reader (USB 06cb:00f0), driven by libfprint. NixOS
-  # wires it into GDM login, screen unlock and sudo. Enroll with
-  # `fprintd-enroll` after the rebuild.
+  # Synaptics fingerprint reader (USB 06cb:00f0), driven by libfprint.
+  # NixOS hooks it into GDM login, screen unlock and sudo.
+  # Enroll a finger with `fprintd-enroll` after the rebuild.
   services.fprintd.enable = true;
 
   environment.systemPackages = with pkgs; [
@@ -71,10 +73,11 @@ in
     freecad
     orca-slicer
     kubectl
-    kubelogin-oidc # `kubectl oidc-login`, the exec plugin ~/.kube/config calls for the SSO clusters
+    kubelogin-oidc # `kubectl oidc-login`. ~/.kube/config uses it for the SSO clusters
   ];
 
-  # Corporate CA bundle and legacy renegotiation, for the corp VPN/proxy.
+  # Corporate CA bundle and legacy TLS renegotiation.
+  # Needed for the corp VPN and proxy.
   security.pki.certificateFiles = [
     ./certs/bundle.crt
   ];
