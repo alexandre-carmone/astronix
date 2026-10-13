@@ -88,13 +88,13 @@ in
     {
       lockAll = true;
       settings = {
-        "org/gnome/system/proxy".ignore-hosts = [
+        "system/proxy".ignore-hosts = [
           "localhost" "127.0.0.0/8" "::1"
           "*.ina.fr" "*.priv.ina"
           "10.0.0.0/8" "172.16.0.0/12" "192.168.0.0/16"
         ];
-        "org/gnome/system/proxy/http" = { host = "firewall.ina.fr"; port = lib.gvariant.mkInt32 81; };
-        "org/gnome/system/proxy/https" = { host = "firewall.ina.fr"; port = lib.gvariant.mkInt32 81; };
+        "system/proxy/http" = { host = "firewall.ina.fr"; port = lib.gvariant.mkInt32 81; };
+        "system/proxy/https" = { host = "firewall.ina.fr"; port = lib.gvariant.mkInt32 81; };
       };
     }
   ];
@@ -106,7 +106,7 @@ in
     serviceConfig.Type = "oneshot";
     script = ''
       if [[ -r ${state} && "$(<${state})" == on ]]; then mode=manual; else mode=none; fi
-      ${pkgs.dconf}/bin/dconf write /org/gnome/system/proxy/mode "'$mode'"
+      ${pkgs.dconf}/bin/dconf write /system/proxy/mode "'$mode'"
     '';
   };
   systemd.user.paths.ina-proxy = {
