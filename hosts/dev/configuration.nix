@@ -28,6 +28,7 @@ in
     ../../modules/syncthing.nix
     ../../modules/printing.nix
     ../../modules/ina-vpn.nix
+    ../../modules/ina-proxy.nix
     ./displaylink.nix
   ];
 
