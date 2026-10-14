@@ -5,7 +5,7 @@
 # NVIDIA recommends them for these cards.
 #
 # The nixpkgs module already enables, for this driver:
-#   - modesetting and fbdev (GNOME Wayland needs both)
+#   - modesetting and fbdev (Plasma Wayland needs both)
 #   - VA-API through nvidia-vaapi-driver
 #   - the kernel suspend notifier
 # So they are not repeated here.
@@ -17,7 +17,7 @@
     # No default since driver 560. It must be set explicitly.
     open = true;
     # Saves VRAM across suspend.
-    # Without it, GNOME Wayland wakes up with corrupted or black windows.
+    # Without it, Wayland wakes up with corrupted or black windows.
     powerManagement.enable = true;
     nvidiaSettings = true;
   };

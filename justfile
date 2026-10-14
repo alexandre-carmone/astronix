@@ -42,11 +42,11 @@ update:
 update-input input:
     nix flake update {{input}} --flake {{flake}}
 
-# Switch this GNOME host to dark, as darkman does at dusk.
+# Switch this host to dark, as darkman does at dusk.
 dark:
     sudo nixos-rebuild switch --flake {{flake}}#{{host}}-dark
 
-# Switch this GNOME host back to the light variant.
+# Switch this host back to the light variant.
 light:
     sudo nixos-rebuild switch --flake {{flake}}#{{host}}
 

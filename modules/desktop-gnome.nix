@@ -1,6 +1,6 @@
 { lib, pkgs, theme ? "light", ... }:
 
-# GNOME for the dev workstation and the gaming desktop.
+# GNOME for the dev workstation.
 # GDM, a trimmed GNOME, purple accent, qwerty-fr keyboard, a few extensions.
 # Light/dark settings come from the theme preset (./theme.nix).
 # They follow the `theme` flake argument.

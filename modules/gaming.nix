@@ -9,7 +9,7 @@
     enable = true;
     remotePlay.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
-    # Adds a "Steam" session to the GDM login screen.
+    # Adds a "Steam" session to the SDDM login screen.
     # Big Picture, fullscreen under gamescope. For the couch.
     gamescopeSession.enable = true;
     # Proton-GE shows up under Steam > Compatibility next to Valve's Protons.

@@ -16,7 +16,8 @@
     (pkgs.brave.override { commandLineArgs = "--password-store=basic"; })
   ];
 
-  # KWallet off for KDE: Plasma on astronix and the KF6 libs kstars uses.
+  # KWallet off for KDE: Plasma on astronix and gamix, and the KF6 libs
+  # kstars uses.
   # With no wallet, they skip it instead of asking for a password.
   # `First Use=false` also hides the "create a new wallet" wizard.
   home-manager.users.alexandre.xdg.configFile."kwalletrc".text = ''

@@ -6,7 +6,7 @@
     ./nvidia.nix
     ../../modules/common.nix
     ../../modules/astro.nix
-    ../../modules/desktop-gnome.nix
+    ../../modules/desktop-plasma-wayland.nix
     ../../modules/darkman.nix
     ../../modules/gaming.nix
   ];

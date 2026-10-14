@@ -1,10 +1,10 @@
 { host, ... }:
 
-# Switches a GNOME host between light and dark at sunrise and sunset.
+# Switches a host between light and dark at sunrise and sunset.
 # The Catppuccin TUI themes are read-only links in the store.
 # So switching means a rebuild into the other output: `#<host>` or
 # `#<host>-dark`. No files are edited at runtime.
-# `host` comes from mkGnomeHost in flake.nix.
+# `host` comes from mkThemedHost in flake.nix.
 #
 # The rebuild needs root. A sudo rule allows these two exact commands
 # without a password. Nothing else.

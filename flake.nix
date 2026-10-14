@@ -16,12 +16,12 @@
 
   outputs = { self, nixpkgs, home-manager, catppuccin, ... }@inputs:
   let
-    # Builds a GNOME host with one theme.
+    # Builds a host with one theme.
     # Both args reach the modules through specialArgs.
     # `theme` picks the preset in modules/theme.nix.
     # `host` is the name of the light output. modules/darkman.nix uses it to
     # switch between `host` and `host-dark`.
-    mkGnomeHost = host: theme: nixpkgs.lib.nixosSystem {
+    mkThemedHost = host: theme: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs theme host; };
       modules = [
@@ -46,14 +46,14 @@
       ];
     };
 
-    # Each GNOME host has a light and a dark output.
-    # They differ in Catppuccin flavor and GNOME color scheme.
+    # dev and gamix each have a light and a dark output.
+    # They differ in Catppuccin flavor and desktop color scheme.
     # darkman switches between them at sunrise and sunset.
-    nixosConfigurations.dev = mkGnomeHost "dev" "light";
-    nixosConfigurations.dev-dark = mkGnomeHost "dev" "dark";
+    nixosConfigurations.dev = mkThemedHost "dev" "light";
+    nixosConfigurations.dev-dark = mkThemedHost "dev" "dark";
 
     # The gaming desktop.
-    nixosConfigurations.gamix = mkGnomeHost "gamix" "light";
-    nixosConfigurations.gamix-dark = mkGnomeHost "gamix" "dark";
+    nixosConfigurations.gamix = mkThemedHost "gamix" "light";
+    nixosConfigurations.gamix-dark = mkThemedHost "gamix" "dark";
   };
 }
