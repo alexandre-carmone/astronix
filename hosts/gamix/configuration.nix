@@ -4,6 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ./nvidia.nix
+    ./cuda.nix
     ../../modules/common.nix
     ../../modules/astro.nix
     ../../modules/desktop-plasma-wayland.nix
