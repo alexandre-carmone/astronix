@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 # Gaming: Steam with Proton-GE, gamescope, GameMode and MangoHud.
-# Heroic for Epic and GOG.
+# Heroic for Epic and GOG. Discord for voice chat.
 # Steam enables 32-bit graphics and the udev rules for Steam controllers
 # and the Index on its own.
 {
@@ -32,5 +32,6 @@
   environment.systemPackages = with pkgs; [
     mangohud # FPS/frametime overlay: `mangohud %command%`
     heroic
+    discord
   ];
 }

@@ -8,7 +8,7 @@ NixOS flake for two astrophotography machines and a gaming desktop.
 | --- | --- | --- |
 | `astronix` | `astronomix` | The rig. Headless Plasma 6 on X11, SDDM autologin, xrdp, a fake EDID for the virtual display, a WiFi hotspot fallback, and the `junos-web` capture app. |
 | `dev` | `inix` | The workstation. GNOME, DisplayLink dock, corporate CA and VPN bits, dev tooling. |
-| `gamix` | `gamix` | The gaming desktop. Plasma 6 on Wayland on an NVIDIA card (open modules), Steam with Proton-GE and a gamescope session, Heroic, GameMode, MangoHud. |
+| `gamix` | `gamix` | The gaming desktop. Plasma 6 on Wayland on an NVIDIA card (open modules), Steam with Proton-GE and a gamescope session, Heroic, GameMode, MangoHud, Discord. |
 
 All three run user `alexandre` and share the astro stack: INDI, KStars, PHD2, Siril.
 `dev` and `gamix` each have a `-dark` twin for darkman.
@@ -36,7 +36,7 @@ modules/
   desktop-plasma.nix   headless Plasma + xrdp (astronix)
   desktop-plasma-wayland.nix  Plasma on Wayland, real monitor (gamix)
   desktop-gnome.nix    GNOME (dev)
-  gaming.nix           Steam, Proton-GE, gamescope, GameMode, MangoHud, Heroic (gamix)
+  gaming.nix           Steam, Proton-GE, gamescope, GameMode, MangoHud, Heroic, Discord (gamix)
   docker.nix           Docker (dev)
   wine.nix             Wine + bottles (dev)
   printing.nix         CUPS + the office printer (dev)
